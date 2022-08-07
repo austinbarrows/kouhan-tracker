@@ -16,6 +16,7 @@ export default function Home() {
         {/* Potentially update/improve this description later; this is more of a quick placeholder */}
       </Head>
       <Sidebar>
+        <SidebarHeader>広範 Tracker</SidebarHeader>
         <SidebarItem itemText="User Info"></SidebarItem>
         <SidebarItem itemText="Home"></SidebarItem>
         <SidebarItem itemText="Dashboard"></SidebarItem>
