@@ -4,7 +4,7 @@ import Sidebar from "../components/sidebar";
 
 export default function Home() {
   return (
-    <div className="text-4xl bg-amber-300">
+    <div className="text-4xl">
       <Head>
         <title>Kouhan Tracker</title>
         <meta
@@ -13,8 +13,10 @@ export default function Home() {
         />{" "}
         {/* Potentially update/improve this description later; this is more of a quick placeholder */}
       </Head>
-      <div>Test text</div>
       <Sidebar sidebarData="data info abc a a"></Sidebar>
+      <div className="bg-amber-300 h-screen max-h-full overflow-clip break-words object-fill">
+        Test text
+      </div>
     </div>
   );
 }
