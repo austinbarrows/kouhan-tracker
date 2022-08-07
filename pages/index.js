@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Image from "next/image";
 import Sidebar from "../components/sidebar";
+import SidebarItem from "../components/sidebaritem";
 
 export default function Home() {
   return (
@@ -13,7 +14,14 @@ export default function Home() {
         />{" "}
         {/* Potentially update/improve this description later; this is more of a quick placeholder */}
       </Head>
-      <Sidebar sidebarData="data info abc a a"></Sidebar>
+      <Sidebar>
+        <SidebarItem itemText="User Info"></SidebarItem>
+        <SidebarItem itemText="Home"></SidebarItem>
+        <SidebarItem itemText="Dashboard"></SidebarItem>
+        <SidebarItem itemText="Calender"></SidebarItem>
+        <SidebarItem itemText="Stats"></SidebarItem>
+        <SidebarItem itemText="Templates"></SidebarItem>
+      </Sidebar>
       <div className="bg-amber-300 h-screen max-h-full overflow-clip break-words object-fill">
         Test text
       </div>
