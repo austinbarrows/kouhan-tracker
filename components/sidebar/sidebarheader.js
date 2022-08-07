@@ -1,3 +1,5 @@
+import SidebarItem from "./sidebaritem";
+
 export default function SidebarHeader({ children }) {
-  return <div className="border-solid border-black border-b">{children}</div>;
+  return <SidebarItem>{children}</SidebarItem>;
 }

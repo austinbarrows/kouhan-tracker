@@ -17,12 +17,12 @@ export default function Home() {
       </Head>
       <Sidebar>
         <SidebarHeader>広範 Tracker</SidebarHeader>
-        <SidebarItem itemText="User Info"></SidebarItem>
-        <SidebarItem itemText="Home"></SidebarItem>
-        <SidebarItem itemText="Dashboard"></SidebarItem>
-        <SidebarItem itemText="Calender"></SidebarItem>
-        <SidebarItem itemText="Stats"></SidebarItem>
-        <SidebarItem itemText="Templates"></SidebarItem>
+        <SidebarItem>User Info</SidebarItem>
+        <SidebarItem>Home</SidebarItem>
+        <SidebarItem>Dashboard</SidebarItem>
+        <SidebarItem>Calender</SidebarItem>
+        <SidebarItem>Stats</SidebarItem>
+        <SidebarItem>Templates</SidebarItem>
       </Sidebar>
       <div className="bg-amber-300 h-screen max-h-full overflow-clip break-words object-fill">
         Test text
