@@ -1,3 +1,3 @@
 export default function SidebarHeader({ children }) {
-  return <div>{children}</div>;
+  return <div className="border-solid border-black border-b">{children}</div>;
 }

@@ -1,3 +1,3 @@
 export default function SidebarItem({ itemText }) {
-  return <div>{itemText}</div>;
+  return <div className="border-solid border-black border-b">{itemText}</div>;
 }
