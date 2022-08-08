@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import Layout from "components/layout";
 import Sidebar from "components/sidebar/sidebar";
 import SidebarItem from "components/sidebar/sidebaritem";
 import SidebarHeader from "components/sidebar/sidebarheader";
