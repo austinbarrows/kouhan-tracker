@@ -20,12 +20,12 @@ export default function Home() {
       </Head>
       <Sidebar>
         <SidebarHeader>広範 Tracker</SidebarHeader>
-        <SidebarItem>User Info</SidebarItem>
-        <SidebarItem>Home</SidebarItem>
-        <SidebarItem>Dashboard</SidebarItem>
+        <SidebarItem href="/profile">User Info</SidebarItem>
+        <SidebarItem href="/home">Home</SidebarItem>
+        <SidebarItem href="/dashboard">Dashboard</SidebarItem>
         <SidebarItem href="/calender">Calender</SidebarItem>
-        <SidebarItem>Stats</SidebarItem>
-        <SidebarItem>Templates</SidebarItem>
+        <SidebarItem href="/stats">Stats</SidebarItem>
+        <SidebarItem href="/templates">Templates</SidebarItem>
         <SidebarFooter>Footer test</SidebarFooter>
       </Sidebar>
       <Main>
