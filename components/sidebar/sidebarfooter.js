@@ -1,4 +1,4 @@
-import SidebarItem from "./sidebaritem";
+import SidebarItem from "components/sidebar/sidebaritem";
 
 export default function SidebarFooter({ children }) {
   return (

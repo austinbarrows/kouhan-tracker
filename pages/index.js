@@ -1,11 +1,11 @@
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import Sidebar from "../components/sidebar/sidebar";
-import SidebarItem from "../components/sidebar/sidebaritem";
-import SidebarHeader from "../components/sidebar/sidebarheader";
-import SidebarFooter from "../components/sidebar/sidebarfooter";
-import Main from "../components/main";
+import Sidebar from "components/sidebar/sidebar";
+import SidebarItem from "components/sidebar/sidebaritem";
+import SidebarHeader from "components/sidebar/sidebarheader";
+import SidebarFooter from "components/sidebar/sidebarfooter";
+import Main from "components/main";
 
 export default function Home() {
   return (
