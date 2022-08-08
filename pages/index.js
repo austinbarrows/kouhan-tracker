@@ -23,7 +23,7 @@ export default function Home() {
         <SidebarItem>User Info</SidebarItem>
         <SidebarItem>Home</SidebarItem>
         <SidebarItem>Dashboard</SidebarItem>
-        <SidebarItem>Calender</SidebarItem>
+        <SidebarItem href="/calender">Calender</SidebarItem>
         <SidebarItem>Stats</SidebarItem>
         <SidebarItem>Templates</SidebarItem>
         <SidebarFooter>Footer test</SidebarFooter>
