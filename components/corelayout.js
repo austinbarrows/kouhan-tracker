@@ -12,7 +12,7 @@ export default function CoreLayout({ children }) {
         <title>Kouhan Tracker</title>
         <meta
           name="description"
-          content="Kouhan Tracker tracks a wide variety of things in a flexible manner to act as a versatile all-in-one tracking and calender application. Kouhan Tracker can be used to track habits, daily tasks such as video game daily quests, skills in development, events--recurring and singular--and really almost anything else one would want to track."
+          content="Kouhan Tracker tracks a wide variety of things in a flexible manner to act as a versatile all-in-one tracking and calendar application. Kouhan Tracker can be used to track habits, daily tasks such as video game daily quests, skills in development, events--recurring and singular--and really almost anything else one would want to track."
         />
         {/* Potentially update/improve this description later; this is more of a quick placeholder */}
       </Head>
@@ -22,7 +22,7 @@ export default function CoreLayout({ children }) {
           <SidebarItem href="/profile">User Info</SidebarItem>
           <SidebarItem href="/home">Home</SidebarItem>
           <SidebarItem href="/dashboard">Dashboard</SidebarItem>
-          <SidebarItem href="/calender">Calender</SidebarItem>
+          <SidebarItem href="/calendar">Calendar</SidebarItem>
           <SidebarItem href="/stats">Stats</SidebarItem>
           <SidebarItem href="/templates">Templates</SidebarItem>
           <SidebarFooter>Footer test</SidebarFooter>
