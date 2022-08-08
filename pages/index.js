@@ -8,7 +8,7 @@ import Main from "../components/main";
 
 export default function Home() {
   return (
-    <div className="text-4xl h-screen w-screen w-full flex">
+    <div className="text-4xl h-screen w-full flex">
       <Head>
         <title>Kouhan Tracker</title>
         <meta
