@@ -9,6 +9,23 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.0",
+    "@emotion/server": "^11.10.0",
+    "@mantine/carousel": "^5.0.3",
+    "@mantine/core": "^5.0.3",
+    "@mantine/dates": "^5.0.3",
+    "@mantine/dropzone": "^5.0.3",
+    "@mantine/form": "^5.0.3",
+    "@mantine/hooks": "^5.0.3",
+    "@mantine/modals": "^5.0.3",
+    "@mantine/next": "^5.0.3",
+    "@mantine/notifications": "^5.0.3",
+    "@mantine/nprogress": "^5.0.3",
+    "@mantine/prism": "^5.0.3",
+    "@mantine/rte": "^5.0.3",
+    "@mantine/spotlight": "^5.0.3",
+    "dayjs": "^1.11.4",
+    "embla-carousel-react": "^7.0.0",
     "next": "12.2.4",
     "react": "18.2.0",
     "react-dom": "18.2.0"
