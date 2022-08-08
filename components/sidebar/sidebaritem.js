@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 export default function SidebarItem({ children, footer, href }) {
-  let className = `border-solid border-black pl-2 py-2 ${
+  let className = `border-solid border-black pl-2 py-1 my-1 ${
     footer ? " border-t" : " border-b"
   }`;
 
