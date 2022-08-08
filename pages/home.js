@@ -4,7 +4,6 @@ import Link from "next/link";
 import Layout from "components/layout";
 import Sidebar from "components/sidebar/sidebar";
 import SidebarItem from "components/sidebar/sidebaritem";
-import SidebarHeader from "components/sidebar/sidebarheader";
 import SidebarFooter from "components/sidebar/sidebarfooter";
 import Main from "components/main";
 
@@ -12,7 +11,7 @@ export default function Home({}) {
   return (
     <Layout>
       <Sidebar>
-        <SidebarHeader>広範 Tracker</SidebarHeader>
+        <SidebarItem href="/">広範 Tracker</SidebarItem>
         <SidebarItem href="/profile">User Info</SidebarItem>
         <SidebarItem href="/home">Home</SidebarItem>
         <SidebarItem href="/dashboard">Dashboard</SidebarItem>
