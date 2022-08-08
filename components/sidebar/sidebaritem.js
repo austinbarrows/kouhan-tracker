@@ -6,6 +6,7 @@ export default function SidebarItem({ children, footer, href }) {
   }`;
 
   if (href) {
+    className += " cursor-pointer";
     return (
       <Link href={href}>
         <div className={className}>{children}</div>
