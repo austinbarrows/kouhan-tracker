@@ -1,6 +1,6 @@
 import Head from "next/head";
 
-export default function Layout({ children }) {
+export default function CoreLayout({ children }) {
   return (
     <div>
       <Head>

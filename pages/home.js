@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import Layout from "components/layout";
+import CoreLayout from "components/corelayout";
 import Sidebar from "components/sidebar/sidebar";
 import SidebarItem from "components/sidebar/sidebaritem";
 import SidebarFooter from "components/sidebar/sidebarfooter";
@@ -9,7 +9,7 @@ import Main from "components/main";
 
 export default function Home({}) {
   return (
-    <Layout>
+    <CoreLayout>
       <Sidebar>
         <SidebarItem href="/">広範 Tracker</SidebarItem>
         <SidebarItem href="/profile">User Info</SidebarItem>
@@ -30,6 +30,6 @@ export default function Home({}) {
           Bottom Right
         </div>
       </Main>
-    </Layout>
+    </CoreLayout>
   );
 }
