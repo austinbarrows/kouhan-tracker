@@ -1,10 +1,16 @@
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import Sidebar from "components/sidebar/sidebar";
-import SidebarItem from "components/sidebar/sidebaritem";
-import SidebarFooter from "components/sidebar/sidebarfooter";
-import Main from "components/main";
+import {
+  AppShell,
+  Navbar,
+  Header,
+  Group,
+  ActionIcon,
+  useMantineColorScheme,
+} from "@mantine/core";
+import { NavbarSimple } from "./sidebar";
+
 export default function CoreLayout({ children }) {
   return (
     <div>
@@ -16,19 +22,26 @@ export default function CoreLayout({ children }) {
         />
         {/* Potentially update/improve this description later; this is more of a quick placeholder */}
       </Head>
-      <div className="text-4xl h-screen w-full flex">
-        <Sidebar>
-          <SidebarItem href="/">広範 Tracker</SidebarItem>
-          <SidebarItem href="/profile">User Info</SidebarItem>
-          <SidebarItem href="/home">Home</SidebarItem>
-          <SidebarItem href="/dashboard">Dashboard</SidebarItem>
-          <SidebarItem href="/calendar">Calendar</SidebarItem>
-          <SidebarItem href="/stats">Stats</SidebarItem>
-          <SidebarItem href="/templates">Templates</SidebarItem>
-          <SidebarFooter>Footer test</SidebarFooter>
-        </Sidebar>
-        <Main>{children}</Main>
-      </div>
+      <AppShell
+        padding="md"
+        fixed={false}
+        navbar={<NavbarSimple></NavbarSimple>}
+        header={
+          <Header height={45}>
+            <Group sx={{ height: "100%" }} px={20} position="apart"></Group>
+          </Header>
+        }
+        styles={(theme) => ({
+          main: {
+            backgroundColor:
+              theme.colorScheme === "dark"
+                ? theme.colors.dark[8]
+                : theme.colors.gray[0],
+          },
+        })}
+      >
+        <div>{children}</div>
+      </AppShell>
     </div>
   );
 }
