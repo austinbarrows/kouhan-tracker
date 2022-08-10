@@ -1,14 +1,17 @@
 import Link from "next/link";
-import { Header, Group } from "@mantine/core";
+import { Header, Group, Container } from "@mantine/core";
 import { DarkModeToggle } from "./darkmodetoggle";
 
 export default function AppHeader({}) {
   return (
     <Header height={55}>
-      <Group sx={{ height: "100%" }} px={20} position="apart">
-        <Link href="/">広範 Tracker</Link>
+      <Container fluid className="flex justify-between h-full items-center">
+        {/* App name/icon div set to 11.9375 rem width because I felt like it was 1 pixel too big to align with the navbar items when set to 12rem */}
+        <div className="p-2 font text-2xl bg-gray-100 rounded-lg w-[11.9375rem] text-center">
+          <Link href="/">広範 Tracker</Link>
+        </div>
         <DarkModeToggle></DarkModeToggle>
-      </Group>
+      </Container>
     </Header>
   );
 }
