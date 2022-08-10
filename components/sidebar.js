@@ -1,15 +1,12 @@
 import { useState } from "react";
 import { createStyles, Navbar, Group, Code } from "@mantine/core";
 import {
-  IconBellRinging,
-  IconFingerprint,
-  IconKey,
-  IconSettings,
-  Icon2fa,
-  IconDatabaseImport,
-  IconReceipt2,
-  IconSwitchHorizontal,
-  IconLogout,
+  IconHome,
+  IconLayoutDashboard,
+  IconUserCircle,
+  IconCalendar,
+  IconChartBar,
+  IconWallpaper,
 } from "@tabler/icons";
 import Link from "next/link";
 
@@ -92,12 +89,12 @@ const useStyles = createStyles((theme, _params, getRef) => {
 });
 
 const data = [
-  { link: "/profile", label: "Profile", icon: IconBellRinging },
-  { link: "/home", label: "Home", icon: Icon2fa },
-  { link: "/dashboard", label: "Dashboard", icon: IconReceipt2 },
-  { link: "/calendar", label: "Calendar", icon: IconFingerprint },
-  { link: "/stats", label: "Stats", icon: IconKey },
-  { link: "/templates", label: "Templates", icon: IconDatabaseImport },
+  { link: "/profile", label: "Profile", icon: IconUserCircle },
+  { link: "/home", label: "Home", icon: IconHome },
+  { link: "/dashboard", label: "Dashboard", icon: IconLayoutDashboard },
+  { link: "/calendar", label: "Calendar", icon: IconCalendar },
+  { link: "/stats", label: "Stats", icon: IconChartBar },
+  { link: "/templates", label: "Templates", icon: IconWallpaper },
 ];
 
 export function NavbarSimple() {
@@ -132,17 +129,7 @@ export function NavbarSimple() {
           className={classes.link}
           onClick={(event) => event.preventDefault()}
         >
-          <IconSwitchHorizontal className={classes.linkIcon} stroke={1.5} />
-          <span>Change account</span>
-        </a>
-
-        <a
-          href="#"
-          className={classes.link}
-          onClick={(event) => event.preventDefault()}
-        >
-          <IconLogout className={classes.linkIcon} stroke={1.5} />
-          <span>Logout</span>
+          <span>Placeholder</span>
         </a>
       </Navbar.Section>
     </Navbar>
