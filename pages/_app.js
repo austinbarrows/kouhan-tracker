@@ -1,9 +1,5 @@
 import "../styles/globals.css";
-import {
-  MantineProvider,
-  ColorSchemeProvider,
-  ColorScheme,
-} from "@mantine/core";
+import { MantineProvider, ColorSchemeProvider } from "@mantine/core";
 import { useState } from "react";
 
 function MyApp({ Component, pageProps }) {

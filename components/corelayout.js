@@ -1,14 +1,5 @@
 import Head from "next/head";
-import Image from "next/image";
-import Link from "next/link";
-import {
-  AppShell,
-  Navbar,
-  Header,
-  Group,
-  ActionIcon,
-  useMantineColorScheme,
-} from "@mantine/core";
+import { AppShell } from "@mantine/core";
 import { NavbarSimple } from "./sidebar";
 import AppHeader from "./header";
 
