@@ -7,7 +7,7 @@ import {
 } from "@mantine/core";
 import { IconSun, IconMoon } from "@tabler/icons";
 
-export function SegmentedToggle() {
+export function DarkModeToggle() {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 
   return (
