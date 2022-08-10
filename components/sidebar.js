@@ -9,6 +9,7 @@ import {
   IconWallpaper,
 } from "@tabler/icons";
 import Link from "next/link";
+import { Router, useRouter } from "next/router";
 
 const useStyles = createStyles((theme, _params, getRef) => {
   const icon = getRef("icon");
@@ -99,18 +100,19 @@ const data = [
 
 export function NavbarSimple() {
   const { classes, cx } = useStyles();
-  const [active, setActive] = useState("Billing");
+  const router = useRouter();
+  const [active, setActive] = useState(router.pathname);
 
   const links = data.map((item) => (
     <Link href={item.link}>
       <a
         className={cx(classes.link, {
-          [classes.linkActive]: item.label === active,
+          [classes.linkActive]: item.link === active,
         })}
         href={item.link}
-        key={item.label}
+        key={item.link}
         onClick={(event) => {
-          setActive(item.label);
+          setActive(item.link);
         }}
       >
         <item.icon className={classes.linkIcon} stroke={1.5} />
