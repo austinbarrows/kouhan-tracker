@@ -10,6 +10,7 @@ import {
   useMantineColorScheme,
 } from "@mantine/core";
 import { NavbarSimple } from "./sidebar";
+import AppHeader from "./header";
 
 export default function CoreLayout({ children }) {
   return (
@@ -26,11 +27,7 @@ export default function CoreLayout({ children }) {
         padding="md"
         fixed={false}
         navbar={<NavbarSimple></NavbarSimple>}
-        header={
-          <Header height={45}>
-            <Group sx={{ height: "100%" }} px={20} position="apart"></Group>
-          </Header>
-        }
+        header={<AppHeader></AppHeader>}
         styles={(theme) => ({
           main: {
             backgroundColor:
