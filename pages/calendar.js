@@ -8,36 +8,6 @@ export default function Calendar({}) {
         <Grid.Col span={12}>
           <Skeleton className="h-12 rounded-lg" animate={false}></Skeleton>
         </Grid.Col>
-        <Grid.Col span={8}>
-          <Skeleton className="h-12 rounded-lg" animate={false}></Skeleton>
-        </Grid.Col>
-        <Grid.Col span={2}>
-          <Skeleton className="h-12 rounded-lg" animate={false}></Skeleton>
-        </Grid.Col>
-        <Grid.Col span={6}>
-          <Skeleton className="h-12 rounded-lg" animate={false}></Skeleton>
-        </Grid.Col>
-        <Grid.Col span={3}>
-          <Skeleton className="h-12 rounded-lg" animate={false}></Skeleton>
-        </Grid.Col>
-        <Grid.Col span={3}>
-          <Skeleton className="h-12 rounded-lg" animate={false}></Skeleton>
-        </Grid.Col>
-        <Grid.Col span={4}>
-          <Skeleton className="h-12 rounded-lg" animate={false}></Skeleton>
-        </Grid.Col>
-        <Grid.Col span={4}>
-          <Skeleton className="h-12 rounded-lg" animate={false}></Skeleton>
-        </Grid.Col>
-        <Grid.Col span={4}>
-          <Skeleton className="h-12 rounded-lg" animate={false}></Skeleton>
-        </Grid.Col>
-        <Grid.Col span={7}>
-          <Skeleton className="h-12 rounded-lg" animate={false}></Skeleton>
-        </Grid.Col>
-        <Grid.Col span={3}>
-          <Skeleton className="h-12 rounded-lg" animate={false}></Skeleton>
-        </Grid.Col>
       </Grid>
     </Box>
   );
