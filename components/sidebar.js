@@ -104,13 +104,12 @@ export function NavbarSimple() {
   const [active, setActive] = useState(router.pathname);
 
   const links = data.map((item) => (
-    <Link href={item.link}>
+    <Link href={item.link} key={item.link}>
       <a
         className={cx(classes.link, {
           [classes.linkActive]: item.link === active,
         })}
         href={item.link}
-        key={item.link}
         onClick={(event) => {
           setActive(item.link);
         }}
