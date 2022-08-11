@@ -1,9 +1,9 @@
-import { Container, Grid, Skeleton } from "@mantine/core";
+import { Box, Container, Grid, Skeleton } from "@mantine/core";
 import CoreLayout from "components/corelayout";
 
 export default function Calendar({}) {
   return (
-    <div>
+    <Box>
       <Grid>
         <Grid.Col span={12}>
           <Skeleton className="h-12 rounded-lg" animate={false}></Skeleton>
@@ -39,7 +39,7 @@ export default function Calendar({}) {
           <Skeleton className="h-12 rounded-lg" animate={false}></Skeleton>
         </Grid.Col>
       </Grid>
-    </div>
+    </Box>
   );
 }
 
