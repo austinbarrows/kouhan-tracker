@@ -1,13 +1,14 @@
 import { Box, Container, Grid, Skeleton } from "@mantine/core";
 import CoreLayout from "components/corelayout";
 import dayjs from "dayjs";
+import create from "zustand";
+import { IconChevronLeft, IconChevronRight } from "@tabler/icons";
+
 const localizedFormat = require("dayjs/plugin/localizedFormat");
 dayjs.extend(localizedFormat);
-import { IconChevronLeft, IconChevronRight } from "@tabler/icons";
-// Day is a dayjs() date object, direction is either "current", "next", or "previous"
-function generateWeek(day, direction) {
-  let week = [];
 
+// Day is a dayjs() date object, direction is either "next" or "previous"
+function generateWeek(day, direction = "") {
   // Find nearest monday and start week array with that monday
   let j = day;
   // Max number of days from Monday is 6 (Sunday)
@@ -18,17 +19,17 @@ function generateWeek(day, direction) {
     j = j.subtract(1, "day");
   }
 
-  if (direction === "current") {
-    // Do nothing
-  } else if (direction === "next") {
+  // Adjust week offset if necessary
+  if (direction === "next") {
     j = j.add(7, "day");
   } else if (direction === "previous") {
     j = j.subtract(7, "day");
   }
 
   // Generate week array with all 7 days starting on a given day
+  let week = [];
   for (let i = 0; i < 7; i++) {
-    week[i] = j.format("LLLL");
+    week[i] = j;
     j = j.add(1, "day");
   }
 
