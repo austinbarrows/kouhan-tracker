@@ -93,6 +93,9 @@ export default function Calendar(props) {
             className="p-2"
           >
             <Grid columns={7} gutter={0}>
+              <Grid.Col span={7} className="text-3xl ml-2 mb-2 mt-1">
+                Weekly Calendar
+              </Grid.Col>
               <Grid.Col span={7}>
                 <Box className="flex select-none p-1 pb-2 justify-between">
                   <Box className="flex">
