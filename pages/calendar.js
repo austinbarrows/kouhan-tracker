@@ -72,31 +72,47 @@ export default function Calendar(props) {
     <Box onLoadStart={() => setWeek(startDay, "current")}>
       <Grid>
         <Grid.Col span={8}>
-          <Grid columns={7} gutter={0}>
-            <Grid.Col span={7}>
-              <Box className="flex select-none">
-                <IconChevronLeft
-                  stroke={1.5}
-                  size={48}
-                  className="border rounded-lg cursor-pointer"
-                  onClick={() => {
-                    setWeek(startDay, "previous");
-                    setStart(startDay.subtract(7, "day"));
-                  }}
-                />
-                <IconChevronRight
-                  stroke={1.5}
-                  size={48}
-                  className="border rounded-lg cursor-pointer"
-                  onClick={() => {
-                    setWeek(startDay, "next");
-                    setStart(startDay.add(7, "day"));
-                  }}
-                />
-              </Box>
-            </Grid.Col>
-            {weekdayComponents}
-          </Grid>
+          <Box
+            sx={(theme) => ({
+              border: `1px solid ${
+                theme.colorScheme === "dark"
+                  ? theme.colors.dark[4]
+                  : theme.colors.gray[2]
+              }`,
+              backgroundColor:
+                theme.colorScheme === "dark"
+                  ? theme.colors.dark[7]
+                  : theme.white,
+              borderRadius: theme.radius.md,
+            })}
+            className="p-2"
+          >
+            <Grid columns={7} gutter={0}>
+              <Grid.Col span={7}>
+                <Box className="flex select-none p-1 pb-2">
+                  <IconChevronLeft
+                    stroke={1.5}
+                    size={48}
+                    className="border rounded-lg cursor-pointer"
+                    onClick={() => {
+                      setWeek(startDay, "previous");
+                      setStart(startDay.subtract(7, "day"));
+                    }}
+                  />
+                  <IconChevronRight
+                    stroke={1.5}
+                    size={48}
+                    className="border rounded-lg cursor-pointer"
+                    onClick={() => {
+                      setWeek(startDay, "next");
+                      setStart(startDay.add(7, "day"));
+                    }}
+                  />
+                </Box>
+              </Grid.Col>
+              {weekdayComponents}
+            </Grid>
+          </Box>
         </Grid.Col>
         <Grid.Col span={4}>
           <Skeleton animate={false} className="h-64"></Skeleton>
