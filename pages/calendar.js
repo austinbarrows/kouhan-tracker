@@ -1,25 +1,48 @@
 import { Box, Container, Grid, Skeleton } from "@mantine/core";
 import CoreLayout from "components/corelayout";
 import dayjs from "dayjs";
-
-export async function getServerSideProps(context) {
+const localizedFormat = require("dayjs/plugin/localizedFormat");
+dayjs.extend(localizedFormat);
+import { IconChevronLeft, IconChevronRight } from "@tabler/icons";
+// Day is a dayjs() date object, direction is either "current", "next", or "previous"
+function generateWeek(day, direction) {
   let week = [];
-  let j = dayjs();
+
+  // Find nearest monday and start week array with that monday
+  let j = day;
+  // Max number of days from Monday is 6 (Sunday)
+  for (let i = 0; i < 6; i++) {
+    if (j.format("dddd") === "Monday") {
+      break;
+    }
+    j = j.subtract(1, "day");
+  }
+
+  if (direction === "current") {
+    // Do nothing
+  } else if (direction === "next") {
+    j = j.add(7, "day");
+  } else if (direction === "previous") {
+    j = j.subtract(7, "day");
+  }
+
+  // Generate week array with all 7 days starting on a given day
   for (let i = 0; i < 7; i++) {
-    week.push(j.format("dddd"));
+    week[i] = j.format("LLLL");
     j = j.add(1, "day");
   }
 
-  return {
-    props: { week: week }, // will be passed to the page component as props
-  };
+  return week;
 }
 
 export default function Calendar(props) {
-  const weekdays = props.week.map((day) => {
+  let day = dayjs();
+  let week = generateWeek(day, "previous");
+
+  const weekdays = week.map((day) => {
     return (
       <Grid.Col span={1} key={day}>
-        <Box className="bg-amber-300 h-full border">{day}</Box>
+        <Box className="bg-amber-300 h-104 border">{day}</Box>
       </Grid.Col>
     );
   });
@@ -28,9 +51,26 @@ export default function Calendar(props) {
     <Box>
       <Grid>
         <Grid.Col span={8}>
-          <Grid columns={7} gutter={0} className="h-128">
+          <Grid columns={7} gutter={0}>
+            <Grid.Col span={7}>
+              <Box className="flex">
+                <IconChevronLeft
+                  stroke={1.5}
+                  size={48}
+                  className="border rounded-lg cursor-pointer"
+                />
+                <IconChevronRight
+                  stroke={1.5}
+                  size={48}
+                  className="border rounded-lg cursor-pointer"
+                />
+              </Box>
+            </Grid.Col>
             {weekdays}
           </Grid>
+        </Grid.Col>
+        <Grid.Col span={4}>
+          <Skeleton animate={false} className="h-64"></Skeleton>
         </Grid.Col>
       </Grid>
     </Box>
