@@ -36,38 +36,66 @@ function generateWeek(day, direction = "") {
   return week;
 }
 
-export default function Calendar(props) {
-  let day = dayjs();
-  let week = generateWeek(day, "previous");
+// This feels hacky but for some reason there's no way to set a default value for weekdays based on startDay since startDay doesn't exist when I'm trying to use it
+const startDayInitial = dayjs();
+const weekdaysInitial = generateWeek(startDayInitial, "current");
+const useWeekStore = create((set) => ({
+  weekdays: weekdaysInitial,
+  startDay: startDayInitial,
+  setWeek: (day, direction) => {
+    set((state) => ({
+      weekdays: generateWeek(day, direction),
+    }));
+  },
+  setStart: (day) => {
+    set((state) => ({
+      startDay: day,
+    }));
+  },
+}));
 
-  const weekdays = week.map((day) => {
+export default function Calendar(props) {
+  const startDay = useWeekStore((state) => state.startDay);
+  const weekdays = useWeekStore((state) => state.weekdays);
+  const setWeek = useWeekStore((state) => state.setWeek);
+  const setStart = useWeekStore((state) => state.setStart);
+
+  const weekdayComponents = weekdays.map((day) => {
     return (
-      <Grid.Col span={1} key={day}>
-        <Box className="bg-amber-300 h-104 border">{day}</Box>
+      <Grid.Col span={1} key={day.format("LLLL")}>
+        <Box className="bg-amber-300 h-104 border">{day.format("LLLL")}</Box>
       </Grid.Col>
     );
   });
 
   return (
-    <Box>
+    <Box onLoadStart={() => setWeek(startDay, "current")}>
       <Grid>
         <Grid.Col span={8}>
           <Grid columns={7} gutter={0}>
             <Grid.Col span={7}>
-              <Box className="flex">
+              <Box className="flex select-none">
                 <IconChevronLeft
                   stroke={1.5}
                   size={48}
                   className="border rounded-lg cursor-pointer"
+                  onClick={() => {
+                    setWeek(startDay, "previous");
+                    setStart(startDay.subtract(7, "day"));
+                  }}
                 />
                 <IconChevronRight
                   stroke={1.5}
                   size={48}
                   className="border rounded-lg cursor-pointer"
+                  onClick={() => {
+                    setWeek(startDay, "next");
+                    setStart(startDay.add(7, "day"));
+                  }}
                 />
               </Box>
             </Grid.Col>
-            {weekdays}
+            {weekdayComponents}
           </Grid>
         </Grid.Col>
         <Grid.Col span={4}>
