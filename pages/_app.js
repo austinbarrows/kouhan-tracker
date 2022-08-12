@@ -1,6 +1,7 @@
 import "../styles/globals.css";
 import { MantineProvider, ColorSchemeProvider } from "@mantine/core";
 import { useState } from "react";
+const { HydrationProvider } = require("react-hydration-provider");
 
 function MyApp({ Component, pageProps }) {
   const getLayout = Component.getLayout || ((page) => page);
@@ -9,18 +10,20 @@ function MyApp({ Component, pageProps }) {
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
 
   return (
-    <ColorSchemeProvider
-      colorScheme={colorScheme}
-      toggleColorScheme={toggleColorScheme}
-    >
-      <MantineProvider
-        withGlobalStyles
-        withNormalizeCSS
-        theme={{ colorScheme }}
+    <HydrationProvider>
+      <ColorSchemeProvider
+        colorScheme={colorScheme}
+        toggleColorScheme={toggleColorScheme}
       >
-        {getLayout(<Component {...pageProps} />)}
-      </MantineProvider>
-    </ColorSchemeProvider>
+        <MantineProvider
+          withGlobalStyles
+          withNormalizeCSS
+          theme={{ colorScheme }}
+        >
+          {getLayout(<Component {...pageProps} />)}
+        </MantineProvider>
+      </ColorSchemeProvider>
+    </HydrationProvider>
   );
 }
 

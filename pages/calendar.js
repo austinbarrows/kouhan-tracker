@@ -3,6 +3,7 @@ import CoreLayout from "components/corelayout";
 import dayjs from "dayjs";
 import create from "zustand";
 import { IconChevronLeft, IconChevronRight, IconRefresh } from "@tabler/icons";
+const { Server, Client } = require("react-hydration-provider");
 
 const localizedFormat = require("dayjs/plugin/localizedFormat");
 dayjs.extend(localizedFormat);
@@ -60,13 +61,17 @@ export default function Calendar(props) {
   const setWeek = useWeekStore((state) => state.setWeek);
   const setStart = useWeekStore((state) => state.setStart);
 
-  const weekdayComponents = weekdays.map((day) => {
-    return (
-      <Grid.Col span={1} key={day.format("LLLL")}>
-        <Box className="bg-amber-300 h-104 border">{day.format("LLLL")}</Box>
+  // Generate weekday info holder components
+  const weekdayComponents = [];
+  for (let i = 0; i < 7; i++) {
+    weekdayComponents.push(
+      <Grid.Col span={1} key={i}>
+        <Box className="bg-amber-300 h-104 border">
+          <Client>{weekdays[i].format("LLLL")}</Client>
+        </Box>
       </Grid.Col>
     );
-  });
+  }
 
   return (
     <Box onLoadStart={() => setWeek(startDay, "current")}>
@@ -89,29 +94,31 @@ export default function Calendar(props) {
           >
             <Grid columns={7} gutter={0}>
               <Grid.Col span={7}>
-                <Box className="flex select-none p-1 pb-2">
-                  <IconChevronLeft
-                    stroke={1.5}
-                    size={48}
-                    className="border rounded-lg cursor-pointer"
-                    onClick={() => {
-                      setWeek(startDay, "previous");
-                      setStart(startDay.subtract(7, "day"));
-                    }}
-                  />
-                  <IconChevronRight
-                    stroke={1.5}
-                    size={48}
-                    className="border rounded-lg cursor-pointer"
-                    onClick={() => {
-                      setWeek(startDay, "next");
-                      setStart(startDay.add(7, "day"));
-                    }}
-                  />
+                <Box className="flex select-none p-1 pb-2 justify-between">
+                  <Box className="flex">
+                    <IconChevronLeft
+                      stroke={1.5}
+                      size={48}
+                      className="border rounded-lg cursor-pointer mr-1"
+                      onClick={() => {
+                        setWeek(startDay, "previous");
+                        setStart(startDay.subtract(7, "day"));
+                      }}
+                    />
+                    <IconChevronRight
+                      stroke={1.5}
+                      size={48}
+                      className="border rounded-lg cursor-pointer mr-2"
+                      onClick={() => {
+                        setWeek(startDay, "next");
+                        setStart(startDay.add(7, "day"));
+                      }}
+                    />
+                  </Box>
                   <IconRefresh
                     stroke={1.5}
                     size={48}
-                    className="border rounded-lg cursor-pointer"
+                    className="border rounded-lg cursor-pointer mr-2"
                     onClick={() => {
                       const updated = dayjs();
                       setStart(updated);
