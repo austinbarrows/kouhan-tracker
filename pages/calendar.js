@@ -2,7 +2,7 @@ import { Box, Container, Grid, Skeleton } from "@mantine/core";
 import CoreLayout from "components/corelayout";
 import dayjs from "dayjs";
 import create from "zustand";
-import { IconChevronLeft, IconChevronRight } from "@tabler/icons";
+import { IconChevronLeft, IconChevronRight, IconRefresh } from "@tabler/icons";
 
 const localizedFormat = require("dayjs/plugin/localizedFormat");
 dayjs.extend(localizedFormat);
@@ -106,6 +106,16 @@ export default function Calendar(props) {
                     onClick={() => {
                       setWeek(startDay, "next");
                       setStart(startDay.add(7, "day"));
+                    }}
+                  />
+                  <IconRefresh
+                    stroke={1.5}
+                    size={48}
+                    className="border rounded-lg cursor-pointer"
+                    onClick={() => {
+                      const updated = dayjs();
+                      setStart(updated);
+                      setWeek(updated);
                     }}
                   />
                 </Box>
