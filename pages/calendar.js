@@ -4,6 +4,12 @@ import dayjs from "dayjs";
 import create from "zustand";
 import { IconChevronLeft, IconChevronRight, IconRefresh } from "@tabler/icons";
 const { Server, Client } = require("react-hydration-provider");
+import {
+  useAuthUser,
+  withAuthUser,
+  withAuthUserTokenSSR,
+  AuthAction,
+} from "next-firebase-auth";
 
 const localizedFormat = require("dayjs/plugin/localizedFormat");
 dayjs.extend(localizedFormat);
@@ -55,7 +61,7 @@ const useWeekStore = create((set) => ({
   },
 }));
 
-export default function Calendar(props) {
+const Calendar = (props) => {
   const startDay = useWeekStore((state) => state.startDay);
   const weekdays = useWeekStore((state) => state.weekdays);
   const setWeek = useWeekStore((state) => state.setWeek);
@@ -140,8 +146,14 @@ export default function Calendar(props) {
       </Grid>
     </Box>
   );
-}
+};
 
 Calendar.getLayout = function getLayout(page) {
   return <CoreLayout>{page}</CoreLayout>;
 };
+
+export const getServerSideProps = withAuthUserTokenSSR({
+  whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
+})();
+
+export default withAuthUser()(Calendar);
