@@ -1,10 +1,10 @@
 import AppHeader from "./header";
-import { AppShell } from "@mantine/core";
+import { AppShell, Box } from "@mantine/core";
 export default function LandingLayout({ children }) {
   return (
     <AppShell
       padding="md"
-      fixed={false}
+      fixed={true}
       header={<AppHeader></AppHeader>}
       styles={(theme) => ({
         main: {
@@ -15,7 +15,7 @@ export default function LandingLayout({ children }) {
         },
       })}
     >
-      <div>{children}</div>
+      <Box>{children}</Box>
     </AppShell>
   );
 }
