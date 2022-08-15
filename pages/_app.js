@@ -2,6 +2,9 @@ import "../styles/globals.css";
 import { MantineProvider, ColorSchemeProvider } from "@mantine/core";
 import { useState } from "react";
 const { HydrationProvider } = require("react-hydration-provider");
+import initAuth from "initAuth";
+
+initAuth();
 
 function MyApp({ Component, pageProps }) {
   const getLayout = Component.getLayout || ((page) => page);
