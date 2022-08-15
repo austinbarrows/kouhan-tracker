@@ -86,8 +86,8 @@ const Auth = (props) => {
     validate: {
       email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
       password: (val) =>
-        val.length <= 6
-          ? "Password should include at least 6 characters"
+        val.length <= 12
+          ? "Password should include at least 12 characters"
           : null,
     },
   });
