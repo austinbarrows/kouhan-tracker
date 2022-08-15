@@ -21,8 +21,9 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
+import create from "zustand";
 
-async function createUser(email, password) {
+async function createUser(email, password, setError) {
   try {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
@@ -36,22 +37,18 @@ async function createUser(email, password) {
       },
     });
   } catch (error) {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.log(errorMessage);
+    // Super basic error handling for now; might be sufficient a long time though, not sure
+    setError(true);
   }
 }
 
-async function loginUser(email, password) {
-  console.log("in login user");
-
+async function loginUser(email, password, setError) {
   try {
     const userCredential = await signInWithEmailAndPassword(
       auth,
       email,
       password
     );
-    console.log("signup working");
     const idToken = await userCredential.user.getIdToken();
     await fetch("http://localhost:3000/api/login", {
       headers: {
@@ -59,14 +56,26 @@ async function loginUser(email, password) {
       },
     });
   } catch (error) {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.log(errorMessage);
+    // Super basic error handling for now; might be sufficient a long time though, not sure
+    setError(true);
   }
 }
 
+const useErrorStore = create((set) => ({
+  error: false,
+  setError: (updatedError) => {
+    set((state) => ({
+      error: updatedError,
+    }));
+  },
+}));
+
 const Auth = (props) => {
+  // State
+  const errorState = useErrorStore((state) => state.error);
+  const setError = useErrorStore((state) => state.setError);
   const [type, toggle] = useToggle(["Login", "Register"]);
+
   const form = useForm({
     initialValues: {
       email: "",
@@ -89,7 +98,6 @@ const Auth = (props) => {
         <Text size="lg" weight={500}>
           {type}
         </Text>
-
         <form
           onSubmit={form.onSubmit(async (values) => {
             let email = values.email;
@@ -98,13 +106,25 @@ const Auth = (props) => {
             console.log("form submitted");
 
             if (type === "Login") {
-              await loginUser(email, password);
+              await loginUser(email, password, setError);
             } else {
-              await createUser(email, password);
+              await createUser(email, password, setError);
             }
           })}
         >
           <Stack>
+            {/* This feels kinda hacky, so I may improve this later so it's not so awkward, but it's only 2 lines so it's okay for now */}
+            {errorState && type === "Register" && (
+              <Box className="text-red-500">
+                Email already in use, please use a different email or login
+              </Box>
+            )}
+            {errorState && type === "Login" && (
+              <Box className="text-red-500">
+                Email or password invalid, please try again
+              </Box>
+            )}
+
             {type === "Register" && (
               <TextInput
                 label="Name"
@@ -121,9 +141,11 @@ const Auth = (props) => {
               label="Email"
               placeholder="hello@mantine.dev"
               value={form.values.email}
-              onChange={(event) =>
-                form.setFieldValue("email", event.currentTarget.value)
-              }
+              onChange={(event) => {
+                form.setFieldValue("email", event.currentTarget.value);
+                // Clear error message since user is trying to correct it
+                setError(false);
+              }}
               error={form.errors.email && "Invalid email"}
             />
 
@@ -132,22 +154,27 @@ const Auth = (props) => {
               label="Password"
               placeholder="Your password"
               value={form.values.password}
-              onChange={(event) =>
-                form.setFieldValue("password", event.currentTarget.value)
-              }
+              onChange={(event) => {
+                form.setFieldValue("password", event.currentTarget.value);
+                // Clear error message since user is trying to correct it
+                setError(false);
+              }}
               error={
                 form.errors.password &&
                 "Password should include at least 6 characters"
               }
             />
           </Stack>
-
           <Group position="apart" mt="xl">
             <Anchor
               component="button"
               type="button"
               color="dimmed"
-              onClick={() => toggle()}
+              onClick={() => {
+                toggle();
+                // Clear error since it will no longer be accurate for the different form type
+                setError(false);
+              }}
               size="xs"
             >
               {type === "Register"
