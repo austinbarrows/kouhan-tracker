@@ -1,8 +1,22 @@
 import Link from "next/link";
-import { Header, Group, Container, Box } from "@mantine/core";
+import { Header, Group, Container, Box, Button } from "@mantine/core";
 import { DarkModeToggle } from "./darkmodetoggle";
+import {
+  useAuthUser,
+  withAuthUser,
+  withAuthUserTokenSSR,
+} from "next-firebase-auth";
 
-export default function AppHeader({}) {
+async function logoutUser(AuthUser) {
+  // Sign out
+  await AuthUser.signOut();
+  // Remove auth cookie
+  const res = await fetch("http://localhost:3000/api/logout");
+}
+
+const AppHeader = ({}) => {
+  const AuthUser = useAuthUser();
+
   return (
     <Header height={55}>
       <Container fluid className="flex justify-between h-full items-center">
@@ -28,8 +42,20 @@ export default function AppHeader({}) {
             広範 Tracker
           </Box>
         </Link>
-        <DarkModeToggle></DarkModeToggle>
+        <Box className="flex gap-4 items-center">
+          <Button
+            color="indigo"
+            onClick={async () => {
+              await logoutUser(AuthUser);
+            }}
+          >
+            Logout
+          </Button>
+          <DarkModeToggle></DarkModeToggle>
+        </Box>
       </Container>
     </Header>
   );
-}
+};
+
+export default withAuthUser()(AppHeader);
