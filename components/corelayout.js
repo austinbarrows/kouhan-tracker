@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { AppShell } from "@mantine/core";
+import { AppShell, Box } from "@mantine/core";
 import { NavbarSimple } from "./sidebar";
 import AppHeader from "./header";
 
@@ -28,7 +28,7 @@ export default function CoreLayout({ children }) {
           },
         })}
       >
-        <div>{children}</div>
+        <Box>{children}</Box>
       </AppShell>
     </div>
   );
