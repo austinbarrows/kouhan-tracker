@@ -43,14 +43,22 @@ const AppHeader = ({}) => {
           </Box>
         </Link>
         <Box className="flex gap-4 items-center">
-          <Button
-            color="indigo"
-            onClick={async () => {
-              await logoutUser(AuthUser);
-            }}
-          >
-            Logout
-          </Button>
+          {AuthUser.id === null ? (
+            <Link href="/auth">
+              <Button color="indigo">Login</Button>
+            </Link>
+          ) : (
+            <Link href="/">
+              <Button
+                color="indigo"
+                onClick={async () => {
+                  await logoutUser(AuthUser);
+                }}
+              >
+                Logout
+              </Button>
+            </Link>
+          )}
           <DarkModeToggle></DarkModeToggle>
         </Box>
       </Container>
