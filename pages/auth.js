@@ -20,16 +20,21 @@ import { auth } from "firebaseConfig";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 import create from "zustand";
 
-async function createUser(email, password, setError) {
+async function createUser(name, email, password, setError) {
   try {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
       password
     );
+    await updateProfile(auth.currentUser, {
+      displayName: name,
+    });
+
     const idToken = await userCredential.user.getIdToken();
     await fetch("http://localhost:3000/api/login", {
       headers: {
@@ -102,13 +107,13 @@ const Auth = (props) => {
           onSubmit={form.onSubmit(async (values) => {
             let email = values.email;
             let password = values.password;
-
+            let name = values.name;
             console.log("form submitted");
 
             if (type === "Login") {
               await loginUser(email, password, setError);
             } else {
-              await createUser(email, password, setError);
+              await createUser(name, email, password, setError);
             }
           })}
         >
@@ -127,7 +132,8 @@ const Auth = (props) => {
 
             {type === "Register" && (
               <TextInput
-                label="Name"
+                required
+                label="Display Name (can change later)"
                 placeholder="Your name"
                 value={form.values.name}
                 onChange={(event) =>
