@@ -1,6 +1,12 @@
 import CoreLayout from "components/corelayout";
+import {
+  useAuthUser,
+  withAuthUser,
+  withAuthUserTokenSSR,
+  AuthAction,
+} from "next-firebase-auth";
 
-export default function Home({}) {
+const Home = () => {
   return (
     <div>
       <div className="pl-2 pt-1 pb-2 h-24 flex-none">Testing 1</div>
@@ -13,8 +19,14 @@ export default function Home({}) {
       </div>
     </div>
   );
-}
+};
 
 Home.getLayout = function getLayout(page) {
   return <CoreLayout>{page}</CoreLayout>;
 };
+
+export const getServerSideProps = withAuthUserTokenSSR({
+  whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
+})();
+
+export default withAuthUser()(Home);
