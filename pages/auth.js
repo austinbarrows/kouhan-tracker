@@ -167,7 +167,7 @@ const Auth = (props) => {
               }}
               error={
                 form.errors.password &&
-                "Password should include at least 6 characters"
+                "Password should include at least 12 characters"
               }
             />
           </Stack>
