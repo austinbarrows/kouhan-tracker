@@ -43,7 +43,7 @@ export default async function handler(req, res) {
     UPDATE -- Just kidding, out of curiosity I searched up how JS objects work and they use hash tables internally (should have guessed lol), so I don't believe this would be faster by much if at all
   */
 
-  const date = dayjs(req.body.startDate);
+  let date = dayjs(req.body.startDate);
 
   let calendarData = [];
   for (let i = 0; i < req.body.numberOfDays; i++) {
