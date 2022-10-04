@@ -9,33 +9,33 @@ Create a `.env.local` file in the root and add the following environment variabl
 - COOKIE_SECRET_CURRENT &mdash; Cookie secret; can be anything but UUIDs are preferred for maximal safety
 - COOKIE_SECRET_PREVIOUS &mdash; Cookie secret that MUST BE DIFFERENT from the other cookie secret; can be anything but UUIDs are preferred for maximal safety
 
-Run `npm install` after cloning or updating
+Run `npm install` after cloning or updating.
 
 
 ## Development Setup
 ### Firebase Setup
-1\. Add the Firebase emulator host environment variable:
-- FIREBASE_AUTH_EMULATOR_HOST &mdash; Host for Firebase emulator (probably `localhost:9099`)
+1\. Add the Firebase emulator host environment variable to `.env.local`:
+- FIREBASE_AUTH_EMULATOR_HOST &mdash; Host for Firebase auth emulator (probably `localhost:9099`)
 
 2\. Install the Firebase CLI:
 ```
 npm install -g firebase-tools
 ```
 
-3\. Run the following in the project root to configure the project to be a Firebase project
+3\. Run the following in the project root to configure the project to be a Firebase project:
 ```
 firebase init
 ```
 
-4\. Initialize the Firebase emulator suite
+4\. Initialize the Firebase emulator suite:
 ```
 firebase init emulators
 ```
 and press enter when notified that you are initializing with an existing Firebase project directory.
 
-5\. Select only the Authentication Emulator from the list and proceed
+5\. Select only the Authentication Emulator from the list and proceed.
 <br>
-6\. Download the emulator now if desired
+6\. Download the emulator now if desired.
 <br>
 <br>
 
