@@ -14,9 +14,15 @@ export default async function handler(req, res) {
   try {
     uid = (await fbAdmin.auth().verifyIdToken(idToken)).uid;
   } catch (e) {
+    console.log("TOKEN VERIFICATION ERROR!!!!!!!!!!!!!!");
     console.log(e);
-    return new Error("Failed to validate User ID Token");
+    res.status(400);
+    // res.status(200).json({ uid: null });
+    res.end();
+    return true;
   }
+
+  console.log("SHOULD NOT RUN!!!");
 
   // Gather data from mongodb for a user for the given period of time after some start date
   const client = await clientPromise;
