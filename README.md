@@ -14,24 +14,39 @@ Run `npm install` after cloning or updating.
 
 ## Development Setup
 ### Firebase Setup
+1\. Create a Firebase account if necessary, and then create a Firebase project for kouhan-tracker.
+2\. Add a Web app to the Firebase project (</> icon). During the addition process, Firebase will display an "Add Firebase SDK" section with code. <br>
+Copy the `firebaseConfig` section that looks like this:
+```
+const firebaseConfig = {
+  apiKey: 
+  authDomain: 
+  projectId: 
+  storageBucket: 
+  messagingSenderId: 
+  appId:
+};
+```
+Paste this section into the `firebaseConfig.js` template file in the root where 
+<br>
 1\. Add the Firebase emulator host environment variable to `.env.local`:
-- FIREBASE_AUTH_EMULATOR_HOST &mdash; Host for Firebase auth emulator (probably `localhost:9099`)
+-  FIREBASE_AUTH_EMULATOR_HOST &mdash; Host for Firebase auth emulator (probably `localhost:9099`)
 
 2\. Install the Firebase CLI:
 ```
 npm install -g firebase-tools
 ```
 
-3\. Run the following in the project root to configure the project to be a Firebase project:
+3\. Run the following in the project root to configure the project to be a Firebase project (log in to Firebase if prompted):
 ```
 firebase init
 ```
 
+### Firebase Emulator Setup
 4\. Initialize the Firebase emulator suite:
 ```
 firebase init emulators
 ```
-and press enter when notified that you are initializing with an existing Firebase project directory.
 
 5\. Select only the Authentication Emulator from the list and proceed.
 <br>
