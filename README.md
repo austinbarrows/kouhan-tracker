@@ -5,7 +5,7 @@ Schedule/progress tracker for a wide variety of regular actions
 Create a `.env.local` file in the root and add the following environment variables:
 - MONGODB_URI &mdash; Local mongodb URI (probably `mongodb://localhost:27017`)
 - MONGODB_DB &mdash; Database name for kouhan-tracker
-- GOOGLE_APPLICATION_CREDENTIALS &mdash; Path to JSON file with Firebase credentials obtained from the the Firebase project for kouhan-tracker → Service accounts → Generate new private key
+- GOOGLE_APPLICATION_CREDENTIALS &mdash; Path to JSON file with Firebase credentials obtained from the Firebase project for kouhan-tracker → Service accounts → Generate new private key
 - COOKIE_SECRET_CURRENT &mdash; Cookie secret; can be anything but UUIDs are preferred for maximal safety
 - COOKIE_SECRET_PREVIOUS &mdash; Cookie secret that MUST BE DIFFERENT from the other cookie secret; can be anything but UUIDs are preferred for maximal safety
 
@@ -15,7 +15,7 @@ Run `npm install` after cloning or updating.
 ## Development Setup
 ### Firebase Setup
 1\. Create a Firebase account if necessary, and then create a Firebase project for kouhan-tracker.
-2\. Add a Web app to the Firebase project (</> icon). During the addition process, Firebase will display an "Add Firebase SDK" section with code. <br>
+2\. Add a Web app (</> icon) to the Firebase project. During the addition process, Firebase will display an "Add Firebase SDK" section with code. <br>
 Copy the `firebaseConfig` section that looks like this:
 ```
 const firebaseConfig = {
