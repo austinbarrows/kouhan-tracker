@@ -37,8 +37,10 @@ export const getServerSideProps = withAuthUserTokenSSR({
   console.log("before response");
   const response = await fetch("http://localhost:3000/api/getCalendarData", {
     method: "POST",
-    body: {
+    headers: {
       authorization: token,
+    },
+    body: {
       startDate: startDate,
       numberOfDays: 7,
     },
