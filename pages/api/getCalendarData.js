@@ -66,7 +66,7 @@ export default async function handler(req, res) {
 /*
 Mongo schema for user data, can be expanded later as I flesh out what data will be stored and how
 The goal of this application is to make access extremely fast, so most of the design choices follow (or SHOULD follow) in accordance with this principle
-  - This is why the times are sorted on insert and why there will be no option to truly have recurring tasks scheduled each day`, only for some finite (but potentially extremely long period of time, like 10 years+)
+  - This is why the times are sorted on insert and why there will be no option to truly have recurring tasks scheduled each day, only for some finite but potentially extremely long period of time, like 10 years+
 {
     userID: uid from firebase,
     displayName: displayName from firebase,
@@ -82,7 +82,7 @@ The goal of this application is to make access extremely fast, so most of the de
         e.g.:
         "recurring": {
           cab6cd5b-0bbd-4ca6-9dc9-3e37c95df393: {
-            title: "workout"
+            title: "workout",
             description: "resistance training @ southwest rec"
           }
         }
