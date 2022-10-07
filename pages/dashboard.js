@@ -45,14 +45,18 @@ export const getServerSideProps = withAuthUserTokenSSR({
       numberOfDays: 7,
     },
   });
-  console.log(response);
+
   try {
     const data = await response.json();
-    return {
-      props: {
-        uid: data.uid,
-      },
-    };
+    if (data.uid !== undefined) {
+      return {
+        props: {
+          uid: data.uid,
+        },
+      };
+    } else {
+      throw new Error("No uid in response JSON");
+    }
   } catch (e) {
     console.log(e);
     return {
