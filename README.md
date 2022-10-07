@@ -1,8 +1,16 @@
 # Kouhan Tracker
 Schedule/progress tracker for a wide variety of regular actions
 
+## Requirements
+This project uses [MongoDB](https://www.mongodb.com/) to store user data, so a MongoDB installation of some kind (local, Atlas, etc.) is required for use.
+Additionally, a [Firebase](https://firebase.google.com/) account is required for user authentication.
+
 ## General Setup
-Create a `.env.local` file in the root and add the following environment variables:
+Run the `generateConfigFiles.js` script in the `scripts` folder, which will generate two config files required for the app to run.
+```
+node scripts/generateConfigFiles.js
+``` 
+Fill the following environment variables in the `.env.local` file according to the schema below:
 - MONGODB_URI &mdash; Local mongodb URI (probably `mongodb://localhost:27017`)
 - MONGODB_DB &mdash; Database name for kouhan-tracker
 - GOOGLE_APPLICATION_CREDENTIALS &mdash; Path to JSON file with Firebase credentials obtained from the Firebase project for kouhan-tracker → Service accounts → Generate new private key
@@ -27,30 +35,31 @@ const firebaseConfig = {
   appId:
 };
 ```
-Paste this section into the `firebaseConfig.js` template file in the root where 
+Paste this section into the `firebaseConfig.js` template file in the root, under/replacing the `// Add config here` comment.
 <br>
-1\. Add the Firebase emulator host environment variable to `.env.local`:
+<br>
+3\. Add the Firebase emulator host environment variable to `.env.local`:
 -  FIREBASE_AUTH_EMULATOR_HOST &mdash; Host for Firebase auth emulator (probably `localhost:9099`)
 
-2\. Install the Firebase CLI:
+4\. Install the Firebase CLI:
 ```
 npm install -g firebase-tools
 ```
 
-3\. Run the following in the project root to configure the project to be a Firebase project (log in to Firebase if prompted):
+5\. Run the following in the project root to configure the project to be a Firebase project (log in to Firebase if prompted):
 ```
 firebase init
 ```
 
 ### Firebase Emulator Setup
-4\. Initialize the Firebase emulator suite:
+6\. Initialize the Firebase emulator suite:
 ```
 firebase init emulators
 ```
 
-5\. Select only the Authentication Emulator from the list and proceed.
+7\. Select only the Authentication Emulator from the list and proceed.
 <br>
-6\. Download the emulator now if desired.
+8\. Download the emulator now if desired.
 <br>
 <br>
 
