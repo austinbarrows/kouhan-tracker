@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    res.status(405).json("ONLY POST REQUESTS!!!!!!!!!!!!");
+    res.status(405).json("ERROR: Only POST requests are allowed.");
   }
   // Validate user ID token and throw error if invalid
   const idToken = req.headers.authorization;
@@ -14,17 +14,13 @@ export default async function handler(req, res) {
   try {
     uid = (await fbAdmin.auth().verifyIdToken(idToken)).uid;
   } catch (e) {
-    console.log("TOKEN VERIFICATION ERROR!!!!!!!!!!!!!!");
     console.log(e);
-    res.status(400);
-    // res.status(200).json({ uid: null });
-    res.end();
+    res.status(400).json({ error: "Could not verify user" });
     return true;
   }
 
-  console.log("SHOULD NOT RUN!!!");
-
   // Gather data from mongodb for a user for the given period of time after some start date
+  try {
   const client = await clientPromise;
   const db = client.db("kt-test");
   const collection = db.collection("users");
@@ -39,7 +35,7 @@ export default async function handler(req, res) {
     // If there are no users with a given uid, there was an error upon account creation where the user was never added to the database, so return an error
     // *OR*
     // If there is more than 1 user with a given uid, there is a bug occurring, since uids are supposed to be unique, so return an error
-    return new Error("BUG: Failed to gather calendar data");
+      throw new Error("BUG: Failed to gather calendar data");
   }
 
   /* 
@@ -60,6 +56,11 @@ export default async function handler(req, res) {
   console.log("Calendar data: ", calendarData);
 
   res.status(200).json({ uid: uid });
+  } catch (e) {
+    console.log("Failed to gather calendar data!");
+    console.log(e);
+    res.status(400).json({ error: "Failed to gather calendar data." });
+  }
 }
 
 /*
