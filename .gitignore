@@ -48,3 +48,6 @@ pubsub-debug.log
 
 # local-only files
 /local
+
+# VS Code config
+.vscode
