@@ -10,9 +10,9 @@ export default async function handler(req, res) {
   // Validate user ID token and throw error if invalid
   const idToken = req.headers.authorization;
   const fbAdmin = getFirebaseAdmin();
-  let uid;
+  let userID;
   try {
-    uid = (await fbAdmin.auth().verifyIdToken(idToken)).uid;
+    userID = (await fbAdmin.auth().verifyIdToken(idToken)).uid;
   } catch (e) {
     console.log(e);
     res.status(400).json({ error: "Could not verify user" });
@@ -26,7 +26,9 @@ export default async function handler(req, res) {
     const collection = db.collection("users");
 
     // Find user and extract their calendar
-    const userSearchResult = await collection.find({ uid: uid }).toArray();
+    const userSearchResult = await collection
+      .find({ userID: userID })
+      .toArray();
     let calendar;
     if (userSearchResult.length === 1) {
       const user = userSearchResult[0];
@@ -55,7 +57,7 @@ export default async function handler(req, res) {
     }
     console.log("Calendar data: ", calendarData);
 
-    res.status(200).json({ uid: uid });
+    res.status(200).json({ userID: userID });
   } catch (e) {
     console.log("Failed to gather calendar data!");
     console.log(e);
