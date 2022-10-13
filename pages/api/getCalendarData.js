@@ -28,7 +28,7 @@ export default async function handler(req, res) {
     // Find user and extract their calendar
     const userSearchResult = await collection.find({ uid: uid }).toArray();
     let calendar;
-    if (findResult.length === 1) {
+    if (userSearchResult.length === 1) {
       const user = userSearchResult[0];
       calendar = user.calendar;
     } else {
