@@ -1,5 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import clientPromise from "lib/mongodb";
+import mongoose from "mongoose";
 import { getFirebaseAdmin } from "next-firebase-auth";
 import dayjs from "dayjs";
 
@@ -80,17 +81,22 @@ The goal of this application is to make access extremely fast, so most of the de
         The times in "times" will be sorted, so the client doesn't have to perform any kind of sorting to display them in the proper order
         Each event in a given array will be an object with at minimum the "title" property OR the "recurring" property so the recurring event can be looked up in the recurring event object for this user (TODO: Maybe stabilize this so each object has all possible properties, which are just null if unused)
         All recurring events should be labeled with a UUID in the "recurring" object that will be accessed in the case that there is a recurring event on a given date
-        
+          - This is because if a user wants to change the information related to a recurring event, it should only be changed in one location
         e.g.:
         "recurring": {
           cab6cd5b-0bbd-4ca6-9dc9-3e37c95df393: {
             title: "workout",
             description: "resistance training @ southwest rec"
+          },
+          87995835-d68c-402e-a62e-1767309a99c0: {
+            title: "read for 30 minutes",
           }
         }
         "dates": [
           "2022-8-16": {
-            "full-day": [],
+            "full-day": [
+              {recurring: 87995835-d68c-402e-a62e-1767309a99c0}
+            ],
             "times": [
               "02:05:43": [ // 2:05:43 am (UTC)
                 {title: "event1"} , {title: "event2"}, {recurring: cab6cd5b-0bbd-4ca6-9dc9-3e37c95df393}
@@ -101,11 +107,12 @@ The goal of this application is to make access extremely fast, so most of the de
             ]
           }
           
-          },
           "2022-8-17": [
+            "times": [
               "17:05:00": [  // 5:05 pm (UTC)
                 {title: "event1"}, {title: "homework"}, {title: "stretching"}, {title: "make dinner"}
               ]
+            ]
           ],
           "2022-8-22": {
               
