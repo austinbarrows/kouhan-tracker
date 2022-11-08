@@ -35,7 +35,8 @@ export const getServerSideProps = withAuthUserTokenSSR({
   // User ID token uniquely identifies a user with their firebase uid and verifies they are legitimately logged in (or their login info has been stolen lol)
   const token = await AuthUser.getIdToken();
   console.log("before response");
-  const response = await fetch("/api/getCalendarData", {
+  // DO NOT USE API PATH in production; instead, directly import database access logic
+  const response = await fetch("http://localhost:3000/api/getCalendarData", {
     method: "POST",
     headers: {
       authorization: token,
