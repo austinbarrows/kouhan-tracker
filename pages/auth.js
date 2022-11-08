@@ -37,14 +37,10 @@ async function createUser(name, email, password, setError) {
 
     const idToken = await userCredential.user.getIdToken();
     // Register if necessary; this API call will do nothing if the user is already registered
-    await fetch("/api/register", {
+    const registerRes = await fetch("/api/register", {
       method: "POST",
       headers: {
-        authorization: token,
-      },
-      body: {
-        startDate: startDate,
-        numberOfDays: 7,
+        authorization: idToken,
       },
     });
 
@@ -55,7 +51,9 @@ async function createUser(name, email, password, setError) {
     });
   } catch (error) {
     // Super basic error handling for now; might be sufficient a long time though, not sure
+    // Might not run when necessary(?) due to cookies and login mechanics
     setError(true);
+    console.log(error);
   }
 }
 
@@ -75,6 +73,7 @@ async function loginUser(email, password, setError) {
   } catch (error) {
     // Super basic error handling for now; might be sufficient a long time though, not sure
     setError(true);
+    console.log(error);
   }
 }
 
