@@ -37,7 +37,7 @@ async function createUser(name, email, password, setError) {
 
     const idToken = await userCredential.user.getIdToken();
     // Register if necessary; this API call will do nothing if the user is already registered
-    await fetch("http://localhost:3000/api/register", {
+    await fetch("/api/register", {
       method: "POST",
       headers: {
         authorization: token,
@@ -48,7 +48,7 @@ async function createUser(name, email, password, setError) {
       },
     });
 
-    await fetch("http://localhost:3000/api/login", {
+    await fetch("/api/login", {
       headers: {
         Authorization: idToken,
       },
@@ -67,7 +67,7 @@ async function loginUser(email, password, setError) {
       password
     );
     const idToken = await userCredential.user.getIdToken();
-    await fetch("http://localhost:3000/api/login", {
+    await fetch("/api/login", {
       headers: {
         Authorization: idToken,
       },
