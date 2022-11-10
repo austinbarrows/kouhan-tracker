@@ -18,7 +18,7 @@ const Dashboard = (props) => {
           ? `Logged-in user's name: ${AuthUser.displayName}`
           : "Not logged in"}
       </Box>
-      <Box>{`Logged-in user's name: ${props.uid}`}</Box>
+      <Box>{`Logged-in user's firebase uid: ${props.userID}`}</Box>
     </Box>
   );
 };
@@ -31,7 +31,7 @@ export const getServerSideProps = withAuthUserTokenSSR({
   whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
 })(async ({ AuthUser }) => {
   // Optionally, get other props.
-  const startDate = "2022-8-20";
+  const startDate = "2022-08-20";
   // User ID token uniquely identifies a user with their firebase uid and verifies they are legitimately logged in (or their login info has been stolen lol)
   const token = await AuthUser.getIdToken();
   console.log("before response");
@@ -49,20 +49,21 @@ export const getServerSideProps = withAuthUserTokenSSR({
 
   try {
     const data = await response.json();
-    if (data.uid !== undefined) {
+    console.log(data);
+    if (data.userID !== undefined) {
       return {
         props: {
-          uid: data.uid,
+          userID: data.userID,
         },
       };
     } else {
-      throw new Error("No uid in response JSON");
+      throw new Error("No userID in response JSON");
     }
   } catch (e) {
     console.log(e);
     return {
       props: {
-        uid: null,
+        userID: null,
       },
     };
   }
