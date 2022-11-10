@@ -41,10 +41,10 @@ export const getServerSideProps = withAuthUserTokenSSR({
     headers: {
       authorization: token,
     },
-    body: {
+    body: JSON.stringify({
       startDate: startDate,
       numberOfDays: 7,
-    },
+    }),
   });
 
   try {
