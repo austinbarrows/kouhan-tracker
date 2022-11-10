@@ -9,6 +9,10 @@ export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.status(405).json("ERROR: Only POST requests are allowed.");
   }
+
+  // This feels like a possible security vulnerability but I don't know exactly why...
+  const body = JSON.parse(req.body);
+
   // Validate user ID token and throw error if invalid
   const idToken = req.headers.authorization;
   let userID;
@@ -50,10 +54,10 @@ export default async function handler(req, res) {
     UPDATE -- Just kidding, out of curiosity I searched up how JS objects work and they use hash tables internally (should have guessed lol), so I don't believe this would be faster by much if at all
   */
 
-    let date = dayjs(req.body.startDate);
+    let date = dayjs(body.startDate);
 
     let calendarData = [];
-    for (let i = 0; i < req.body.numberOfDays; i++) {
+    for (let i = 0; i < body.numberOfDays; i++) {
       // calendarData will have 'undefined' for any days in the user's calendar that have no scheduled events
       calendarData[i] = calendar[date.format("YYYY-MM-DD")];
       date = date.add(1, "day");
