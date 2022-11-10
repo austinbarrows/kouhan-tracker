@@ -38,7 +38,9 @@ export default async function handler(req, res) {
       // If there are no users with a given uid, there was an error upon account creation where the user was never added to the database, so return an error
       // *OR*
       // If there is more than 1 user with a given uid, there is a bug occurring, since uids are supposed to be unique, so return an error
-      throw new Error("BUG: Failed to gather calendar data");
+      throw new Error(
+        "BUG: Failed to gather calendar data -- 0 users found OR 2+ users found for a single user ID"
+      );
     }
 
     /* 
