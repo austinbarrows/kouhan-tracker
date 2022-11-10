@@ -1,7 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import clientPromise from "lib/mongodb";
 import mongoose from "mongoose";
-import { getFirebaseAdmin } from "next-firebase-auth";
+import { getAuth } from "firebase-admin/auth";
+import { init } from "next-firebase-auth";
 import dayjs from "dayjs";
 
 export default async function handler(req, res) {
@@ -10,10 +11,9 @@ export default async function handler(req, res) {
   }
   // Validate user ID token and throw error if invalid
   const idToken = req.headers.authorization;
-  const fbAdmin = getFirebaseAdmin();
   let userID;
   try {
-    userID = (await fbAdmin.auth().verifyIdToken(idToken)).uid;
+    userID = (await getAuth().verifyIdToken(idToken)).uid;
   } catch (e) {
     console.log(e);
     res.status(400).json({ error: "Could not verify user" });

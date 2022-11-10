@@ -1,6 +1,7 @@
 // ./pages/api/register
 import clientPromise from "lib/mongodb";
-import { getFirebaseAdmin } from "next-firebase-auth";
+import { getAuth } from "firebase-admin/auth";
+import { init } from "next-firebase-auth";
 import initAuth from "initAuth";
 import mongoose from "mongoose";
 const { Schema, model } = mongoose;
@@ -25,10 +26,9 @@ const handler = async (req, res) => {
 
   // Validate user ID token and throw error if invalid
   const idToken = req.headers.authorization;
-  const fbAdmin = getFirebaseAdmin();
   let newUser;
   try {
-    newUser = await fbAdmin.auth().verifyIdToken(idToken);
+    newUser = await getAuth().verifyIdToken(idToken);
   } catch (e) {
     console.log(e);
     res.status(400).json({ error: "Could not verify user" });

@@ -1,7 +1,9 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import clientPromise from "lib/mongodb";
-import { getFirebaseAdmin } from "next-firebase-auth";
+import { getAuth } from "firebase-admin/auth";
+import { init } from "next-firebase-auth";
 import dayjs from "dayjs";
+import { getAuth } from "firebase/auth";
 
 /*
   Must be called with request body of the following form:
@@ -86,10 +88,9 @@ export default async function handler(req, res) {
   }
   // Validate user ID token and throw error if invalid
   const idToken = req.body.authorization;
-  const fbAdmin = getFirebaseAdmin();
   let uid;
   try {
-    uid = (await fbAdmin.auth().verifyIdToken(idToken)).uid;
+    uid = (await getAuth().verifyIdToken(idToken)).uid;
   } catch (e) {
     console.log(e);
     return new Error("Failed to validate User ID Token");
