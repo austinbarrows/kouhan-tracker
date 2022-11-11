@@ -11,7 +11,7 @@ Run the `generateConfigFiles.js` script in the `scripts` folder, which will gene
 node scripts/generateConfigFiles.js
 ``` 
 Fill the following environment variables in the `.env.local` file according to the schema below:
-- MONGODB_URI &mdash; Local mongodb URI (probably `mongodb://localhost:27017`)
+- MONGODB_URI &mdash; Local mongodb URI (probably `mongodb://127.0.0.1:27017`)
 - MONGODB_DB &mdash; Database name for kouhan-tracker
 - GOOGLE_APPLICATION_CREDENTIALS &mdash; Path to JSON file with Firebase credentials obtained from the Firebase project for kouhan-tracker → Service accounts → Generate new private key
 - COOKIE_SECRET_CURRENT &mdash; Cookie secret; can be anything but UUIDs are preferred for maximal safety
@@ -39,7 +39,7 @@ Paste this section into the `firebaseConfig.js` template file in the root, under
 <br>
 <br>
 3\. Add the Firebase emulator host environment variable to `.env.local`:
--  FIREBASE_AUTH_EMULATOR_HOST &mdash; Host for Firebase auth emulator (probably `localhost:9099`)
+-  FIREBASE_AUTH_EMULATOR_HOST &mdash; Host for Firebase auth emulator (probably `127.0.0.1:9099`)
 
 4\. Install the Firebase CLI:
 ```
