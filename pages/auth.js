@@ -77,6 +77,19 @@ async function loginUser(email, password, setError) {
   }
 }
 
+async function formOnSubmit(values) {
+  let email = values.email;
+  let password = values.password;
+  let name = values.name;
+  console.log("form submitted");
+
+  if (type === "Login") {
+    await loginUser(email, password, setError);
+  } else {
+    await createUser(name, email, password, setError);
+  }
+}
+
 const useErrorStore = create((set) => ({
   error: false,
   setError: (updatedError) => {
@@ -116,16 +129,7 @@ const Auth = (props) => {
         </Text>
         <form
           onSubmit={form.onSubmit(async (values) => {
-            let email = values.email;
-            let password = values.password;
-            let name = values.name;
-            console.log("form submitted");
-
-            if (type === "Login") {
-              await loginUser(email, password, setError);
-            } else {
-              await createUser(name, email, password, setError);
-            }
+            await formOnSubmit(values);
           })}
         >
           <Stack>
