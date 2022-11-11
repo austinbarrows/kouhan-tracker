@@ -136,7 +136,7 @@ const Auth = (props) => {
             {/* This feels kinda hacky, so I may improve this later so it's not so awkward, but it's only 2 lines so it's okay for now */}
             {errorState && type === "Register" && (
               <Box className="text-red-500">
-                Email already in use, please use a different email or login
+                Email already in use, please use a different email or log in
               </Box>
             )}
             {errorState && type === "Login" && (
