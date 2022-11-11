@@ -1,5 +1,6 @@
 import { Box, Container, Grid, Skeleton } from "@mantine/core";
 import CoreLayout from "components/corelayout";
+import { AddCalendarItemCard } from "components/addcalendaritemcard";
 import dayjs from "dayjs";
 import create from "zustand";
 import { IconChevronLeft, IconChevronRight, IconRefresh } from "@tabler/icons";
@@ -141,7 +142,7 @@ const Calendar = (props) => {
           </Box>
         </Grid.Col>
         <Grid.Col span={4}>
-          <Skeleton animate={false} className="h-64"></Skeleton>
+          <AddCalendarItemCard></AddCalendarItemCard>
         </Grid.Col>
       </Grid>
     </Box>
