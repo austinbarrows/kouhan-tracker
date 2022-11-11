@@ -1,9 +1,20 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import clientPromise from "lib/mongodb";
+import mongoose from "mongoose";
 import { getAuth } from "firebase-admin/auth";
 import { init } from "next-firebase-auth";
 import dayjs from "dayjs";
-import { getAuth } from "firebase/auth";
+
+const { Schema, model } = mongoose;
+
+const userSchema = new Schema({
+  userID: String, // String is shorthand for {type: String}
+  displayName: String,
+  calendar: {
+    recurring: { type: Map, of: { type: Object } }, // Maybe a pointless way to define this? But also possibly safer (due to POSSIBLE prototype pollution prevention)???
+    dates: [],
+  },
+});
 
 /*
   Must be called with request body of the following form:
@@ -84,16 +95,21 @@ import { getAuth } from "firebase/auth";
 */
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    res.status(405).json("ONLY POST REQUESTS!!!!!!!!!!!!");
+    res.status(405).json("ERROR: Only POST requests are allowed.");
   }
+
+  // This feels like a possible security vulnerability but I don't know exactly why...
+  const body = JSON.parse(req.body);
+
   // Validate user ID token and throw error if invalid
-  const idToken = req.body.authorization;
-  let uid;
+  const idToken = req.headers.authorization;
+  let userID;
   try {
-    uid = (await getAuth().verifyIdToken(idToken)).uid;
+    userID = (await getAuth().verifyIdToken(idToken)).uid;
   } catch (e) {
     console.log(e);
-    return new Error("Failed to validate User ID Token");
+    res.status(400).json({ error: "Could not verify user" });
+    return true;
   }
 
   // Store given events on given dates in the user's calendar
@@ -102,19 +118,23 @@ export default async function handler(req, res) {
   const collection = db.collection("users");
 
   // Find user and extract their calendar
-  const userSearchResult = await collection.find({ uid: uid }).toArray();
+  const userSearchResult = await collection.find({ userID: userID }).toArray();
   let calendar;
-  if (findResult.length === 1) {
+  if (userSearchResult.length === 1) {
     const user = userSearchResult[0];
     calendar = user.calendar;
   } else {
     // If there are no users with a given uid, there was an error upon account creation where the user was never added to the database, so return an error
     // *OR*
     // If there is more than 1 user with a given uid, there is a bug occurring, since uids are supposed to be unique, so return an error
-    return new Error("BUG: Failed to gather calendar data");
+    throw new Error(
+      "BUG: Failed to gather calendar data -- 0 users found OR 2+ users found for a single user ID"
+    );
   }
+
+  console.log(calendar);
 
   // Store new events in calendar
 
-  res.status(200).json({ uid: uid });
+  res.status(200).json({ userID: userID });
 }
