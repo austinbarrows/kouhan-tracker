@@ -77,7 +77,7 @@ async function loginUser(email, password, setError) {
   }
 }
 
-async function formOnSubmit(values) {
+async function submitForm(values, type, setError) {
   let email = values.email;
   let password = values.password;
   let name = values.name;
@@ -129,7 +129,7 @@ const Auth = (props) => {
         </Text>
         <form
           onSubmit={form.onSubmit(async (values) => {
-            await formOnSubmit(values);
+            await submitForm(values, type, setError);
           })}
         >
           <Stack>
