@@ -16,12 +16,18 @@ import {
   Grid,
   Radio,
 } from "@mantine/core";
-import { Calendar, DatePicker, TimeInput, Month } from "@mantine/dates";
-
+import {
+  Calendar,
+  DatePicker,
+  TimeInput,
+  Month,
+  DateRangePicker,
+} from "@mantine/dates";
+import { useAuthUser, withAuthUser } from "next-firebase-auth";
+import { getAuth } from "firebase/auth";
 import create from "zustand";
 import dayjs from "dayjs";
-
-const formOnSubmit = async (values) => {};
+import { useEffect } from "react";
 
 const useErrorStore = create((set) => ({
   error: false,
@@ -83,6 +89,33 @@ const useSelectedWeekdaysStore = create((set) => ({
   },
 }));
 
+const useMonthlyDayStore = create((set) => ({
+  monthlyDay: new Date(2018, 0, 1),
+  setMonthlyDay: (updatedValue) => {
+    set((state) => ({ monthlyDay: updatedValue }));
+  },
+}));
+
+const useYearlyDayStore = create((set) => ({
+  yearlyDay: new Date(2018, 0, 1),
+  setYearlyDay: (updatedValue) => {
+    set((state) => ({ yearlyDay: updatedValue }));
+  },
+}));
+
+async function submitForm(values) {
+  const body = { itemData: values };
+  let token = getAuth().currentUser.accessToken;
+  console.dir(token);
+  let test = await fetch("/api/addCalendarData", {
+    method: "POST",
+    headers: {
+      authorization: token,
+    },
+    body: JSON.stringify(body),
+  });
+}
+
 export function AddCalendarItemCard() {
   // State
   const errorState = useErrorStore((state) => state.error);
@@ -99,18 +132,35 @@ export function AddCalendarItemCard() {
   );
   const weekdays = useSelectedWeekdaysStore((state) => state.weekdays);
   const setWeekday = useSelectedWeekdaysStore((state) => state.setWeekday);
+  const monthlyDay = useMonthlyDayStore((state) => state.monthlyDay);
+  const setMonthlyDay = useMonthlyDayStore((state) => state.setMonthlyDay);
+  const yearlyDay = useYearlyDayStore((state) => state.yearlyDay);
+  const setYearlyDay = useYearlyDayStore((state) => state.setYearlyDay);
+
+  // For sycnhronization purposes, this is computed once up here
+  const currentDate = new Date();
 
   const form = useForm({
     initialValues: {
       name: "",
       date: "",
       time: new Date(),
-      recurring: false,
-      allDay: false,
+      recurring: recurring,
+      recurringScale: recurringScale,
+      allDay: allDay,
+      weekdays: weekdays,
+      monthlyDay: monthlyDay,
+      yearlyDay: yearlyDay,
+      spanningPeriod: [null, null],
     },
 
     validate: {},
   });
+
+  // Set yearlyDay to the current date only once on component load
+  useEffect(() => {
+    setYearlyDay(currentDate);
+  }, []);
 
   return (
     <Paper radius="md" p="xl" withBorder className="p-2 pt-3 pl-4">
@@ -120,8 +170,9 @@ export function AddCalendarItemCard() {
         </Grid.Col>
         <form
           onSubmit={form.onSubmit(async (values) => {
-            await formOnSubmit(values);
+            await submitForm(values);
           })}
+          className="w-full"
         >
           <Stack>
             <TextInput
@@ -159,6 +210,7 @@ export function AddCalendarItemCard() {
                 value={recurringScale}
                 onChange={(value) => {
                   setRecurringScale(value);
+                  form.setFieldValue("recurringScale", value);
                 }}
               >
                 <Radio value="daily" label="Daily" />
@@ -177,6 +229,7 @@ export function AddCalendarItemCard() {
                       variant={day.selected ? "filled" : "outline"}
                       onClick={(event) => {
                         setWeekday(index);
+                        form.setFieldValue("weekdays", weekdays);
                       }}
                     >
                       {day.weekday}
@@ -188,11 +241,34 @@ export function AddCalendarItemCard() {
 
             {recurring && recurringScale === "monthly" && (
               <Box>
-                <Month hideWeekdays month={new Date(2018, 0, 1)} />
+                <Month
+                  hideWeekdays
+                  hideOutsideDates
+                  weekendDays={[]}
+                  value={monthlyDay}
+                  onChange={(value) => {
+                    setMonthlyDay(value);
+                    form.setFieldValue("monthlyDay", value);
+                  }}
+                  month={new Date(2018, 0, 1)}
+                />
                 <Box className="text-xs">
                   *Selecting days beyond the 28th will place the recurring date
                   on the latest day possible in each month
                 </Box>
+              </Box>
+            )}
+
+            {recurring && recurringScale === "yearly" && (
+              <Box>
+                <Calendar
+                  disableOutsideEvents
+                  value={yearlyDay}
+                  onChange={(value) => {
+                    setYearlyDay(value);
+                    form.setFieldValue("yearlyDay", value);
+                  }}
+                />
               </Box>
             )}
 
@@ -203,6 +279,9 @@ export function AddCalendarItemCard() {
                 placeholder="Choose date"
                 value={form.values.date}
                 label="Date"
+                onChange={(value) => {
+                  form.setFieldValue("date", value);
+                }}
               />
             )}
 
@@ -212,10 +291,20 @@ export function AddCalendarItemCard() {
                 label="Time"
                 value={form.values.time}
                 format="12"
-                onChange={(event) => {
-                  form.setFieldValue("time", event.currentTarget.value);
-                  // Clear error message since user is trying to correct it
-                  setError(false);
+                onChange={(value) => {
+                  form.setFieldValue("time", value);
+                }}
+              />
+            )}
+
+            {recurring && (
+              <DateRangePicker
+                required
+                label="Spanning period"
+                placeholder="Choose dates spanned"
+                value={form.values.spanningPeriod}
+                onChange={(value) => {
+                  form.setFieldValue("spanningPeriod", value);
                 }}
               />
             )}
