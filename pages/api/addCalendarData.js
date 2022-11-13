@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import { getAuth } from "firebase-admin/auth";
 import { init } from "next-firebase-auth";
 import dayjs from "dayjs";
+import User from "../../db/models/userModel";
 
 const { Schema, model } = mongoose;
 
@@ -100,6 +101,7 @@ export default async function handler(req, res) {
 
   // This feels like a possible security vulnerability but I don't know exactly why...
   const body = JSON.parse(req.body);
+  console.log(body);
 
   // Validate user ID token and throw error if invalid
   const idToken = req.headers.authorization;
@@ -113,12 +115,12 @@ export default async function handler(req, res) {
   }
 
   // Store given events on given dates in the user's calendar
-  const client = await clientPromise;
-  const db = client.db("kt-test");
-  const collection = db.collection("users");
+  await mongoose.connect(process.env.MONGODB_URI + "/" + "kt-test");
+  const dbMongoose = mongoose.connection;
 
   // Find user and extract their calendar
-  const userSearchResult = await collection.find({ userID: userID }).toArray();
+  const userSearchResult = await User.find({ userID: userID });
+
   let calendar;
   if (userSearchResult.length === 1) {
     const user = userSearchResult[0];
@@ -133,6 +135,9 @@ export default async function handler(req, res) {
   }
 
   console.log(calendar);
+
+  const test = await userSearchResult[0].save();
+  console.log(test);
 
   // Store new events in calendar
 
