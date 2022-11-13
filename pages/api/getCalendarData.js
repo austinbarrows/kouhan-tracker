@@ -1,9 +1,9 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import clientPromise from "lib/mongodb";
 import mongoose from "mongoose";
 import { getAuth } from "firebase-admin/auth";
 import { init } from "next-firebase-auth";
 import dayjs from "dayjs";
+import User from "../../db/models/userModel";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -26,14 +26,12 @@ export default async function handler(req, res) {
 
   // Gather data from mongodb for a user for the given period of time after some start date
   try {
-    const client = await clientPromise;
-    const db = client.db("kt-test");
-    const collection = db.collection("users");
+    await mongoose.connect(process.env.MONGODB_URI + "/" + "kt-test");
+    const dbMongoose = mongoose.connection;
 
     // Find user and extract their calendar
-    const userSearchResult = await collection
-      .find({ userID: userID })
-      .toArray();
+    const userSearchResult = await User.find({ userID: userID });
+
     let calendar;
     if (userSearchResult.length === 1) {
       const user = userSearchResult[0];
