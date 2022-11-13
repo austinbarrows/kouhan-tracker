@@ -353,6 +353,7 @@ export function AddCalendarItemCard() {
                 onChange={(value) => {
                   form.setFieldValue("spanningPeriod", value);
                 }}
+                minDate={currentDate}
                 {...form.getInputProps("spanningPeriod")}
               />
             )}
