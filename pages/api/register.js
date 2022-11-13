@@ -5,19 +5,9 @@ import { init } from "next-firebase-auth";
 import initAuth from "initAuth";
 import mongoose from "mongoose";
 const { Schema, model } = mongoose;
+import User from "../../db/models/userModel";
 
 initAuth();
-
-const userSchema = new Schema({
-  userID: String, // String is shorthand for {type: String}
-  displayName: String,
-  calendar: {
-    recurring: { type: Map, of: { type: Object } }, // Maybe a pointless way to define this? But also possibly safer (due to POSSIBLE prototype pollution prevention)???
-    dates: [],
-  },
-});
-
-const User = model("User", userSchema);
 
 const handler = async (req, res) => {
   if (req.method !== "POST") {
