@@ -22,3 +22,20 @@ think it is an extremely rare situation in reality, so I won't look into a fix
 for it right now.
 
 ## ID: 2
+### Tags: [unsolved]
+There is a bug where if a user tries to submit an API request and they have waited long enough,
+their Firebase ID token will have expired, and thus the API request cannot be completed because
+the token cannot be verified. This leads to the following error message:
+
+```
+FirebaseAuthError: Firebase ID token has expired. Get a fresh ID token from your client app and try again (auth/id-token-expired). See https://firebase.google.com/docs/auth/admin/verify-id-tokens for details on how to retriev
+e an ID token.
+
+<omitted for brevity>
+
+errorInfo: {
+    code: 'auth/id-token-expired',
+    message: 'Firebase ID token has expired. Get a fresh ID token from your client app and try again (auth/id-token-expired). See https://firebase.google.com/docs/auth/admin/verify-id-tokens for details on how to retrieve an ID token.'
+},
+codePrefix: 'auth'
+```
