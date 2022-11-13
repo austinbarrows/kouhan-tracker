@@ -116,6 +116,18 @@ async function submitForm(values) {
   });
 }
 
+function validateWeekdays(weekdays) {
+  let anySelected = false;
+  for (let i = 0; i < weekdays.length; i++) {
+    if (weekdays[i].selected) {
+      anySelected = true;
+      break;
+    }
+  }
+
+  return anySelected;
+}
+
 export function AddCalendarItemCard() {
   // State
   const errorState = useErrorStore((state) => state.error);
@@ -154,7 +166,16 @@ export function AddCalendarItemCard() {
       spanningPeriod: [null, null],
     },
 
-    validate: {},
+    validate: {
+      spanningPeriod: (value) =>
+        !recurring || (value[0] && value[1])
+          ? null
+          : "Please provide a spanning period for this recurring action",
+      weekdays: (value) =>
+        !recurring || recurringScale !== "weekly" || validateWeekdays(value)
+          ? null
+          : "Please select at least one weekday",
+    },
   });
 
   // Set yearlyDay to the current date only once on component load
@@ -221,22 +242,48 @@ export function AddCalendarItemCard() {
             )}
 
             {recurring && recurringScale === "weekly" && (
-              <Button.Group>
-                {weekdays.map((day, index) => {
-                  return (
-                    <Button
-                      key={day.weekday}
-                      variant={day.selected ? "filled" : "outline"}
-                      onClick={(event) => {
-                        setWeekday(index);
-                        form.setFieldValue("weekdays", weekdays);
-                      }}
-                    >
-                      {day.weekday}
-                    </Button>
-                  );
-                })}
-              </Button.Group>
+              <Box>
+                <Button.Group>
+                  {weekdays.map((day, index) => {
+                    return (
+                      <Button
+                        key={day.weekday}
+                        variant={day.selected ? "filled" : "outline"}
+                        onClick={(event) => {
+                          setWeekday(index);
+                          form.setFieldValue("weekdays", weekdays);
+                        }}
+                        sx={
+                          form.errors.weekdays &&
+                          ((theme) => ({
+                            borderColor:
+                              theme.colorScheme === "dark"
+                                ? theme.colors.red[9]
+                                : theme.colors.red[5],
+                            color:
+                              theme.colorScheme === "dark"
+                                ? theme.colors.red[9]
+                                : theme.colors.red[5],
+                          }))
+                        }
+                      >
+                        {day.weekday}
+                      </Button>
+                    );
+                  })}
+                </Button.Group>
+                <Box
+                  sx={(theme) => ({
+                    fontSize: theme.fontSizes.xs,
+                    color:
+                      theme.colorScheme === "dark"
+                        ? theme.colors.red[9]
+                        : theme.colors.red[5],
+                  })}
+                >
+                  {form.errors.weekdays}
+                </Box>
+              </Box>
             )}
 
             {recurring && recurringScale === "monthly" && (
@@ -306,6 +353,7 @@ export function AddCalendarItemCard() {
                 onChange={(value) => {
                   form.setFieldValue("spanningPeriod", value);
                 }}
+                {...form.getInputProps("spanningPeriod")}
               />
             )}
           </Stack>
