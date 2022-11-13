@@ -16,28 +16,22 @@ const handler = async (req, res) => {
 
   // Validate user ID token and throw error if invalid
   const idToken = req.headers.authorization;
-  let newUser;
+  let newUserUID;
   try {
-    newUser = await getAuth().verifyIdToken(idToken);
+    newUserUID = (await getAuth().verifyIdToken(idToken)).uid;
   } catch (e) {
     console.log(e);
     res.status(400).json({ error: "Could not verify user" });
     return true;
   }
 
-  const userID = newUser.uid;
-  const displayName = newUser.displayName;
-
-  // MongoDB setup
-  const client = await clientPromise;
-  const db = client.db("kt-test");
-  const collection = db.collection("users");
+  const displayName = (await getAuth().getUser(newUserUID)).displayName;
 
   await mongoose.connect(process.env.MONGODB_URI + "/" + "kt-test");
   const dbMongoose = mongoose.connection;
 
   // Test to see if user already exists
-  const userSearchResult = await collection.find({ userID: userID }).toArray();
+  const userSearchResult = await User.find({ userID: newUserUID });
   if (userSearchResult.length !== 0) {
     res.status(400).json({ error: "User is already registered" });
     return true;
@@ -45,9 +39,9 @@ const handler = async (req, res) => {
 
   // Add new user to database
   const newUserDoc = new User({
-    userID: userID,
+    userID: newUserUID,
     displayName: displayName,
-    calendar: { recurring: {}, dates: [] },
+    calendar: { events: {}, dates: [] },
   });
   const addResult = await newUserDoc.save();
 
