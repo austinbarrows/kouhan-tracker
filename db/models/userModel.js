@@ -6,8 +6,16 @@ const userSchema = new Schema({
   userID: String, // String is shorthand for {type: String}
   displayName: String,
   calendar: {
-    events: { type: Map, of: { type: Object } }, // Maybe a pointless way to define this? But also possibly safer (due to POSSIBLE prototype pollution prevention)???
-    dates: [],
+    events: {
+      type: Map,
+      of: { type: Object },
+      default: new Map(),
+    },
+    dates: {
+      type: Map,
+      of: { type: Object },
+      default: new Map(),
+    },
   },
 });
 
@@ -51,7 +59,7 @@ module.exports = mongoose.models.User || mongoose.model("User", userSchema);
             title: "study for databases exam"
           }
         }
-        "dates": [
+        "dates": {
           "2022-8-16": {
             "full-day": [
               "5fdce84c-a769-4e62-b8b0-e8ce4d40e54b"
@@ -76,7 +84,7 @@ module.exports = mongoose.models.User || mongoose.model("User", userSchema);
           "2022-8-22": {
               
           }
-        ]
+        }
     }
 }
 */
