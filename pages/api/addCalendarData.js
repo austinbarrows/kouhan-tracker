@@ -5,6 +5,7 @@ import { getAuth } from "firebase-admin/auth";
 import { init } from "next-firebase-auth";
 import dayjs from "dayjs";
 import User from "../../db/models/userModel";
+import { randomUUID } from "crypto";
 
 const { Schema, model } = mongoose;
 
@@ -32,13 +33,13 @@ export default async function handler(req, res) {
   await mongoose.connect(process.env.MONGODB_URI + "/" + "kt-test");
   const dbMongoose = mongoose.connection;
 
-  // Find user and extract their calendar
+  // Verify user is unique and extract them if so
   const userSearchResult = await User.find({ userID: userID });
 
   let calendar;
+  let user;
   if (userSearchResult.length === 1) {
-    const user = userSearchResult[0];
-    calendar = user.calendar;
+    user = userSearchResult[0];
   } else {
     // If there are no users with a given uid, there was an error upon account creation where the user was never added to the database, so return an error
     // *OR*
@@ -48,9 +49,169 @@ export default async function handler(req, res) {
     );
   }
 
-  console.log(calendar);
+  const calendarItem = body.itemData;
+  let daySpan = 0; // Only possible if not recurring or if some type of error occurs
+  if (calendarItem.recurring) {
+    // Should error if these spanning period endpoints don't exist
+    daySpan =
+      dayjs(calendarItem.spanningPeriod[1]).diff(
+        dayjs(calendarItem.spanningPeriod[0]),
+        "day"
+      ) + 1; // +1 to include both endpoint days -- used for iteration later
+  }
 
-  const test = await userSearchResult[0].save();
+  console.log(daySpan);
+
+  const event = {
+    title: calendarItem.name,
+  };
+
+  const eventID = randomUUID();
+  user.calendar.events.set(eventID, event);
+
+  const time = dayjs(calendarItem.time).format("HH:mm:ss");
+  let date = dayjs(calendarItem.spanningPeriod[0]);
+  // Determine how to schedule the event based on provided form parameters
+  if (calendarItem.recurring) {
+    switch (calendarItem.recurringScale) {
+      case "daily":
+        // Place event ID on each date in the time period
+        for (let i = 0; i < daySpan; i++) {
+          const formattedDay = date.format("YYYY-MM-DD");
+          if (!user.calendar.dates[formattedDay]) {
+            user.calendar.dates[formattedDay] = {
+              allDay: [],
+              times: {},
+            };
+          }
+
+          if (calendarItem.allDay) {
+            user.calendar.dates[formattedDay].allDay.push(eventID);
+          } else {
+            if (!user.calendar.dates[formattedDay].times[time]) {
+              user.calendar.dates[formattedDay].times[time] = [];
+            }
+
+            user.calendar.dates[formattedDay].times[time].push(eventID);
+          }
+          date = date.add(1, "day");
+        }
+        break;
+
+      case "weekly":
+        // Place event ID on each date in the time period
+        for (let i = 0; i < daySpan; i++) {
+          const dayOfWeek = (date.day() + 6) % 7; // Offset because my weekdays array is Monday-indexed and dayjs is Sunday-indexed
+          // Do not add events on a given date unless it is one of the desired days of the week
+          if (!calendarItem.weekdays[dayOfWeek].selected) {
+            date = date.add(1, "day");
+            continue;
+          }
+
+          const formattedDay = date.format("YYYY-MM-DD");
+          if (!user.calendar.dates[formattedDay]) {
+            user.calendar.dates[formattedDay] = {
+              allDay: [],
+              times: {},
+            };
+          }
+
+          if (calendarItem.allDay) {
+            user.calendar.dates[formattedDay].allDay.push(eventID);
+          } else {
+            if (!user.calendar.dates[formattedDay].times[time]) {
+              user.calendar.dates[formattedDay].times[time] = [];
+            }
+
+            user.calendar.dates[formattedDay].times[time].push(eventID);
+          }
+          date = date.add(1, "day");
+        }
+        break;
+
+      case "monthly":
+        // Place event ID on each date in the time period
+        // NOT DONE*************************
+        const monthlyDateBasis = dayjs(calendarItem.monthlyDay).date();
+        /**For use in non-strict monthly event-setting -- basically, if a 
+           monthly event falls on a date that does not exist in a month 
+           (i.e. february 30th or april 31st), then the event's date will get
+           floored to the final date of that month. This is completed by
+           not doing anything if the date is past the final date in a month
+           (indicated by the starting values in monthDateSet), or replacing
+           the value in monthDateSet with the event's provided date if the date
+           is within the possible dates of a given month.
+        */
+        const monthDateSet = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        for (let i = 0; i < monthDateSet.length; i++) {
+          if (monthlyDateBasis < monthDateSet[i]) {
+            monthDateSet[i] = monthlyDateBasis;
+          }
+        }
+
+        for (let i = 0; i < daySpan; i++) {
+          // Do not add events on a given date unless it is on the desired day of the month
+          const monthlyDate = monthDateSet[date.month()]; // date.month() return values match indices of monthDateSet
+          if (date.date() !== monthlyDate) {
+            date = date.add(1, "day");
+            continue;
+          }
+
+          const formattedDay = date.format("YYYY-MM-DD");
+          if (!user.calendar.dates[formattedDay]) {
+            user.calendar.dates[formattedDay] = {
+              allDay: [],
+              times: {},
+            };
+          }
+
+          if (calendarItem.allDay) {
+            user.calendar.dates[formattedDay].allDay.push(eventID);
+          } else {
+            if (!user.calendar.dates[formattedDay].times[time]) {
+              user.calendar.dates[formattedDay].times[time] = [];
+            }
+
+            user.calendar.dates[formattedDay].times[time].push(eventID);
+          }
+          date = date.add(1, "day");
+        }
+        break;
+
+      case "yearly":
+        // Place event ID on each date in the time period
+        const yearlyDate = dayjs(calendarItem.yearlyDay).format("MM-DD");
+        for (let i = 0; i < daySpan; i++) {
+          // Do not add events on a given date unless it is on the desired day of the month
+          if (date.format("MM-DD") !== yearlyDate) {
+            date = date.add(1, "day");
+            continue;
+          }
+
+          const formattedDay = date.format("YYYY-MM-DD");
+          if (!user.calendar.dates[formattedDay]) {
+            user.calendar.dates[formattedDay] = {
+              allDay: [],
+              times: {},
+            };
+          }
+
+          if (calendarItem.allDay) {
+            user.calendar.dates[formattedDay].allDay.push(eventID);
+          } else {
+            if (!user.calendar.dates[formattedDay].times[time]) {
+              user.calendar.dates[formattedDay].times[time] = [];
+            }
+
+            user.calendar.dates[formattedDay].times[time].push(eventID);
+          }
+          date = date.add(1, "day");
+        }
+        break;
+    }
+  }
+
+  const test = await user.save();
   console.log(test);
 
   // Store new events in calendar
