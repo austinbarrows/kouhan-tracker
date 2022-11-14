@@ -164,6 +164,7 @@ export function AddCalendarItemCard() {
       monthlyDay: monthlyDay,
       yearlyDay: yearlyDay,
       spanningPeriod: [null, null],
+      monthlyStrict: false,
     },
 
     validate: {
