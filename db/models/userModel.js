@@ -64,14 +64,14 @@ module.exports = mongoose.models.User || mongoose.model("User", userSchema);
             "full-day": [
               "5fdce84c-a769-4e62-b8b0-e8ce4d40e54b"
             ],
-            "times": [
+            "times": {
               "02:05:43": [ // 2:05:43 am (UTC)
                 "0980d9ff-f096-488b-a476-f27ab2ee61f4"
               ],
               "17:05:00": [  // 5:05 pm (UTC)
                 "cab6cd5b-0bbd-4ca6-9dc9-3e37c95df393", "87995835-d68c-402e-a62e-1767309a99c0"
               ]
-            ]
+            }
           }
           
           "2022-8-17": [
