@@ -38,33 +38,6 @@ const useErrorStore = create((set) => ({
   },
 }));
 
-const useRecurringStore = create((set) => ({
-  recurring: false,
-  setRecurring: (updatedValue) => {
-    set((state) => ({
-      recurring: updatedValue,
-    }));
-  },
-}));
-
-const useAllDayStore = create((set) => ({
-  allDay: false,
-  setAllDay: (updatedValue) => {
-    set((state) => ({
-      allDay: updatedValue,
-    }));
-  },
-}));
-
-const useRecurringScaleStore = create((set) => ({
-  recurringScale: "daily",
-  setRecurringScale: (updatedValue) => {
-    set((state) => ({
-      recurringScale: updatedValue,
-    }));
-  },
-}));
-
 // Helper function to invert a given weekday's value
 function weekdayTransform(weekdays, index) {
   weekdays[index].selected = !weekdays[index].selected;
@@ -86,20 +59,6 @@ const useSelectedWeekdaysStore = create((set) => ({
   ],
   setWeekday: (dayIndex) => {
     set((state) => ({ weekdays: weekdayTransform(state.weekdays, dayIndex) }));
-  },
-}));
-
-const useMonthlyDayStore = create((set) => ({
-  monthlyDay: new Date(2018, 0, 1),
-  setMonthlyDay: (updatedValue) => {
-    set((state) => ({ monthlyDay: updatedValue }));
-  },
-}));
-
-const useYearlyDayStore = create((set) => ({
-  yearlyDay: new Date(2018, 0, 1),
-  setYearlyDay: (updatedValue) => {
-    set((state) => ({ yearlyDay: updatedValue }));
   },
 }));
 
@@ -132,22 +91,8 @@ export function AddCalendarItemCard() {
   // State
   const errorState = useErrorStore((state) => state.error);
   const setError = useErrorStore((state) => state.setError);
-  const recurring = useRecurringStore((state) => state.recurring);
-  const setRecurring = useRecurringStore((state) => state.setRecurring);
-  const allDay = useAllDayStore((state) => state.allDay);
-  const setAllDay = useAllDayStore((state) => state.setAllDay);
-  const recurringScale = useRecurringScaleStore(
-    (state) => state.recurringScale
-  );
-  const setRecurringScale = useRecurringScaleStore(
-    (state) => state.setRecurringScale
-  );
   const weekdays = useSelectedWeekdaysStore((state) => state.weekdays);
   const setWeekday = useSelectedWeekdaysStore((state) => state.setWeekday);
-  const monthlyDay = useMonthlyDayStore((state) => state.monthlyDay);
-  const setMonthlyDay = useMonthlyDayStore((state) => state.setMonthlyDay);
-  const yearlyDay = useYearlyDayStore((state) => state.yearlyDay);
-  const setYearlyDay = useYearlyDayStore((state) => state.setYearlyDay);
 
   // For sycnhronization purposes, this is computed once up here
   const currentDate = new Date();
@@ -157,23 +102,25 @@ export function AddCalendarItemCard() {
       name: "",
       date: "",
       time: new Date(),
-      recurring: recurring,
-      recurringScale: recurringScale,
-      allDay: allDay,
+      recurring: false,
+      recurringScale: "daily",
+      allDay: false,
       weekdays: weekdays,
-      monthlyDay: monthlyDay,
-      yearlyDay: yearlyDay,
+      monthlyDay: new Date(2018, 0, 1),
+      yearlyDay: new Date(2018, 0, 1),
       spanningPeriod: [null, null],
       monthlyStrict: false,
     },
 
     validate: {
       spanningPeriod: (value) =>
-        !recurring || (value[0] && value[1])
+        !form.values.recurring || (value[0] && value[1])
           ? null
           : "Please provide a spanning period for this recurring action",
       weekdays: (value) =>
-        !recurring || recurringScale !== "weekly" || validateWeekdays(value)
+        !form.values.recurring ||
+        form.values.recurringScale !== "weekly" ||
+        validateWeekdays(value)
           ? null
           : "Please select at least one weekday",
     },
@@ -181,7 +128,7 @@ export function AddCalendarItemCard() {
 
   // Set yearlyDay to the current date only once on component load
   useEffect(() => {
-    setYearlyDay(currentDate);
+    form.setFieldValue("yearlyDay", currentDate);
   }, []);
 
   return (
@@ -209,29 +156,26 @@ export function AddCalendarItemCard() {
 
             <Checkbox
               label="All-day (no time)"
-              checked={allDay}
+              checked={form.values.allDay}
               onChange={(event) => {
-                setAllDay(event.currentTarget.checked);
                 form.setFieldValue("allDay", event.currentTarget.checked);
               }}
             />
 
             <Checkbox
               label="Recurring"
-              checked={recurring}
+              checked={form.values.recurring}
               onChange={(event) => {
-                setRecurring(event.currentTarget.checked);
                 form.setFieldValue("recurring", event.currentTarget.checked);
               }}
             />
 
-            {recurring && (
+            {form.values.recurring && (
               <Radio.Group
                 name="recurringScale"
                 className="p-0"
-                value={recurringScale}
+                value={form.values.recurringScale}
                 onChange={(value) => {
-                  setRecurringScale(value);
                   form.setFieldValue("recurringScale", value);
                 }}
               >
@@ -242,7 +186,7 @@ export function AddCalendarItemCard() {
               </Radio.Group>
             )}
 
-            {recurring && recurringScale === "weekly" && (
+            {form.values.recurring && form.values.recurringScale === "weekly" && (
               <Box>
                 <Button.Group>
                   {weekdays.map((day, index) => {
@@ -287,15 +231,14 @@ export function AddCalendarItemCard() {
               </Box>
             )}
 
-            {recurring && recurringScale === "monthly" && (
+            {form.values.recurring && form.values.recurringScale === "monthly" && (
               <Box>
                 <Month
                   hideWeekdays
                   hideOutsideDates
                   weekendDays={[]}
-                  value={monthlyDay}
+                  value={form.values.monthlyDay}
                   onChange={(value) => {
-                    setMonthlyDay(value);
                     form.setFieldValue("monthlyDay", value);
                   }}
                   month={new Date(2018, 0, 1)}
@@ -307,20 +250,19 @@ export function AddCalendarItemCard() {
               </Box>
             )}
 
-            {recurring && recurringScale === "yearly" && (
+            {form.values.recurring && form.values.recurringScale === "yearly" && (
               <Box>
                 <Calendar
                   disableOutsideEvents
-                  value={yearlyDay}
+                  value={form.values.yearlyDay}
                   onChange={(value) => {
-                    setYearlyDay(value);
                     form.setFieldValue("yearlyDay", value);
                   }}
                 />
               </Box>
             )}
 
-            {!recurring && (
+            {!form.values.recurring && (
               <DatePicker
                 required
                 allowFreeInput
@@ -333,7 +275,7 @@ export function AddCalendarItemCard() {
               />
             )}
 
-            {!allDay && (
+            {!form.values.allDay && (
               <TimeInput
                 required
                 label="Time"
@@ -345,7 +287,7 @@ export function AddCalendarItemCard() {
               />
             )}
 
-            {recurring && (
+            {form.values.recurring && (
               <DateRangePicker
                 required
                 label="Spanning period"
