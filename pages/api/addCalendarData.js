@@ -11,7 +11,7 @@ const { Schema, model } = mongoose;
 
 /* Modifies user object to add an item to 
    their calendar and then returns that modified user object */
-function addCalendarItem(user, calendarItem, eventID, formattedDay) {
+function addCalendarItem(user, calendarItem, eventID, formattedDay, time) {
   if (!user.calendar.dates.get(formattedDay)) {
     user.calendar.dates.set(formattedDay, {
       allDay: [],
@@ -112,7 +112,13 @@ export default async function handler(req, res) {
         for (let i = 0; i < daySpan; i++) {
           const formattedDay = date.format("YYYY-MM-DD");
 
-          user = addCalendarItem(user, calendarItem, eventID, formattedDay);
+          user = addCalendarItem(
+            user,
+            calendarItem,
+            eventID,
+            formattedDay,
+            time
+          );
           date = date.add(1, "day");
         }
         break;
@@ -128,7 +134,13 @@ export default async function handler(req, res) {
           }
 
           const formattedDay = date.format("YYYY-MM-DD");
-          user = addCalendarItem(user, calendarItem, eventID, formattedDay);
+          user = addCalendarItem(
+            user,
+            calendarItem,
+            eventID,
+            formattedDay,
+            time
+          );
           date = date.add(1, "day");
         }
         break;
@@ -162,7 +174,13 @@ export default async function handler(req, res) {
           }
 
           const formattedDay = date.format("YYYY-MM-DD");
-          user = addCalendarItem(user, calendarItem, eventID, formattedDay);
+          user = addCalendarItem(
+            user,
+            calendarItem,
+            eventID,
+            formattedDay,
+            time
+          );
           date = date.add(1, "day");
         }
         break;
@@ -178,7 +196,13 @@ export default async function handler(req, res) {
           }
 
           const formattedDay = date.format("YYYY-MM-DD");
-          user = addCalendarItem(user, calendarItem, eventID, formattedDay);
+          user = addCalendarItem(
+            user,
+            calendarItem,
+            eventID,
+            formattedDay,
+            time
+          );
           date = date.add(1, "day");
         }
         break;
