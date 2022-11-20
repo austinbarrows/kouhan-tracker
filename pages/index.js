@@ -1,4 +1,4 @@
-import LandingLayout from "components/landinglayout";
+import LandingLayout from "components/landingLayout";
 import Link from "next/link";
 
 export default function Index() {

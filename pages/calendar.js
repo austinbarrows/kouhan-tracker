@@ -1,5 +1,6 @@
-import { Box, Container, Grid, Skeleton } from "@mantine/core";
-import CoreLayout from "components/corelayout";
+import { Box, Container, Grid, Skeleton, Text } from "@mantine/core";
+import CoreLayout from "components/coreLayout";
+import { AddCalendarItemCard } from "components/addCalendarItemCard";
 import dayjs from "dayjs";
 import create from "zustand";
 import { IconChevronLeft, IconChevronRight, IconRefresh } from "@tabler/icons";
@@ -10,6 +11,8 @@ import {
   withAuthUserTokenSSR,
   AuthAction,
 } from "next-firebase-auth";
+import { getAuth } from "firebase/auth";
+import { useEffect } from "react";
 
 const localizedFormat = require("dayjs/plugin/localizedFormat");
 dayjs.extend(localizedFormat);
@@ -49,6 +52,7 @@ const weekdaysInitial = generateWeek(startDayInitial, "current");
 const useWeekStore = create((set) => ({
   weekdays: weekdaysInitial,
   startDay: startDayInitial,
+  calendar: [],
   setWeek: (day, direction) => {
     set((state) => ({
       weekdays: generateWeek(day, direction),
@@ -59,28 +63,51 @@ const useWeekStore = create((set) => ({
       startDay: day,
     }));
   },
+  setCalendar: (calendar) => {
+    set((state) => ({
+      calendar: calendar,
+    }));
+  },
 }));
 
 const Calendar = (props) => {
   const startDay = useWeekStore((state) => state.startDay);
   const weekdays = useWeekStore((state) => state.weekdays);
+  const calendar = useWeekStore((state) => state.calendar);
   const setWeek = useWeekStore((state) => state.setWeek);
   const setStart = useWeekStore((state) => state.setStart);
+  const setCalendar = useWeekStore((state) => state.setCalendar);
 
-  // Generate weekday info holder components
-  const weekdayComponents = [];
-  for (let i = 0; i < 7; i++) {
-    weekdayComponents.push(
-      <Grid.Col span={1} key={i}>
-        <Box className="bg-amber-300 h-104 border">
-          <Client>{weekdays[i].format("LLLL")}</Client>
-        </Box>
-      </Grid.Col>
-    );
-  }
+  console.log("testABC");
+  useEffect(() => {
+    setWeek(startDay, "current");
+    console.log("test");
+
+    const updateCalendar = async () => {
+      console.log("test");
+      const startDate = dayjs().format();
+      const token = getAuth().currentUser.accessToken;
+      const response = await fetch("/api/getCalendarData", {
+        method: "POST",
+        headers: {
+          authorization: token,
+        },
+        body: JSON.stringify({
+          startDate: startDate,
+          numberOfDays: 7,
+        }),
+      });
+      const data = await response.json();
+      const newCalendar = data.calendar;
+      console.log(newCalendar);
+      setCalendar(newCalendar);
+    };
+
+    updateCalendar();
+  }, []);
 
   return (
-    <Box onLoadStart={() => setWeek(startDay, "current")}>
+    <Box>
       <Grid>
         <Grid.Col span={8}>
           <Box
@@ -136,12 +163,21 @@ const Calendar = (props) => {
                   />
                 </Box>
               </Grid.Col>
-              {weekdayComponents}
+              {weekdays.map((day, index) => {
+                return (
+                  <Grid.Col span={1} key={index}>
+                    <Box className="bg-amber-300 h-104 border">
+                      <Text>{day.format("YYYY-MM-DD")}</Text>
+                      <Text>{JSON.stringify(calendar[index])}</Text>
+                    </Box>
+                  </Grid.Col>
+                );
+              })}
             </Grid>
           </Box>
         </Grid.Col>
         <Grid.Col span={4}>
-          <Skeleton animate={false} className="h-64"></Skeleton>
+          <AddCalendarItemCard></AddCalendarItemCard>
         </Grid.Col>
       </Grid>
     </Box>

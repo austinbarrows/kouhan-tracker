@@ -1,5 +1,5 @@
 import { withAuthUser, AuthAction } from "next-firebase-auth";
-import LandingLayout from "components/landinglayout";
+import LandingLayout from "components/landingLayout";
 import { useToggle, upperFirst } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import {
@@ -36,14 +36,24 @@ async function createUser(name, email, password, setError) {
     });
 
     const idToken = await userCredential.user.getIdToken();
-    await fetch("http://localhost:3000/api/login", {
+    // Register if necessary; this API call will do nothing if the user is already registered
+    const registerRes = await fetch("/api/register", {
+      method: "POST",
+      headers: {
+        authorization: idToken,
+      },
+    });
+
+    await fetch("/api/login", {
       headers: {
         Authorization: idToken,
       },
     });
   } catch (error) {
     // Super basic error handling for now; might be sufficient a long time though, not sure
+    // Might not run when necessary(?) due to cookies and login mechanics
     setError(true);
+    console.log(error);
   }
 }
 
@@ -55,7 +65,7 @@ async function loginUser(email, password, setError) {
       password
     );
     const idToken = await userCredential.user.getIdToken();
-    await fetch("http://localhost:3000/api/login", {
+    await fetch("/api/login", {
       headers: {
         Authorization: idToken,
       },
@@ -63,6 +73,20 @@ async function loginUser(email, password, setError) {
   } catch (error) {
     // Super basic error handling for now; might be sufficient a long time though, not sure
     setError(true);
+    console.log(error);
+  }
+}
+
+async function submitForm(values, type, setError) {
+  let email = values.email;
+  let password = values.password;
+  let name = values.name;
+  console.log("form submitted");
+
+  if (type === "Login") {
+    await loginUser(email, password, setError);
+  } else {
+    await createUser(name, email, password, setError);
   }
 }
 
@@ -105,23 +129,14 @@ const Auth = (props) => {
         </Text>
         <form
           onSubmit={form.onSubmit(async (values) => {
-            let email = values.email;
-            let password = values.password;
-            let name = values.name;
-            console.log("form submitted");
-
-            if (type === "Login") {
-              await loginUser(email, password, setError);
-            } else {
-              await createUser(name, email, password, setError);
-            }
+            await submitForm(values, type, setError);
           })}
         >
           <Stack>
             {/* This feels kinda hacky, so I may improve this later so it's not so awkward, but it's only 2 lines so it's okay for now */}
             {errorState && type === "Register" && (
               <Box className="text-red-500">
-                Email already in use, please use a different email or login
+                Email already in use, please use a different email or log in
               </Box>
             )}
             {errorState && type === "Login" && (
@@ -167,7 +182,7 @@ const Auth = (props) => {
               }}
               error={
                 form.errors.password &&
-                "Password should include at least 6 characters"
+                "Password should include at least 12 characters"
               }
             />
           </Stack>

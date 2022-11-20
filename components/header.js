@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Header, Group, Container, Box, Button } from "@mantine/core";
-import { DarkModeToggle } from "./darkmodetoggle";
+import { DarkModeToggle } from "./darkmodeToggle";
 import {
   useAuthUser,
   withAuthUser,
@@ -11,7 +11,7 @@ async function logoutUser(AuthUser) {
   // Sign out
   await AuthUser.signOut();
   // Remove auth cookie
-  const res = await fetch("http://localhost:3000/api/logout");
+  const res = await fetch("/api/logout");
 }
 
 const AppHeader = ({}) => {

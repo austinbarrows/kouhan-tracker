@@ -45,3 +45,9 @@ kouhan-tracker-firebase*
 database-debug.log
 firestore-debug.log
 pubsub-debug.log
+
+# local-only files
+/local
+
+# VS Code config
+.vscode
