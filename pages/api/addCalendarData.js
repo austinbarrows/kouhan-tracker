@@ -32,8 +32,8 @@ function addCalendarItem(user, calendarItem, eventID, formattedDay, time) {
       user.calendar.dates.get(formattedDay).times[time] = [];
     }
 
-    let updatedTimes = user.calendar.dates.get(formattedDay).times[time];
-    updatedTimes.push(eventID);
+    let updatedTimes = user.calendar.dates.get(formattedDay).times;
+    updatedTimes[time].push(eventID);
 
     user.calendar.dates.set(formattedDay, {
       allDay: user.calendar.dates.get(formattedDay).allDay,
