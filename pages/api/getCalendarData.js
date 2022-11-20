@@ -57,12 +57,12 @@ export default async function handler(req, res) {
     let calendarData = [];
     for (let i = 0; i < body.numberOfDays; i++) {
       // calendarData will have 'undefined' for any days in the user's calendar that have no scheduled events
-      calendarData[i] = calendar[date.format("YYYY-MM-DD")];
+      calendarData[i] = calendar.dates.get(date.format("YYYY-MM-DD"));
       date = date.add(1, "day");
     }
     console.log("Calendar data: ", calendarData);
 
-    res.status(200).json({ userID: userID });
+    res.status(200).json({ userID: userID, calendar: calendarData });
   } catch (e) {
     console.log("Failed to gather calendar data!");
     console.log(e);
