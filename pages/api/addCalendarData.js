@@ -9,6 +9,41 @@ import { randomUUID } from "crypto";
 
 const { Schema, model } = mongoose;
 
+/* Modifies user object to add an item to 
+   their calendar and then returns that modified user object */
+function addCalendarItem(user, calendarItem, eventID, formattedDay) {
+  if (!user.calendar.dates.get(formattedDay)) {
+    user.calendar.dates.set(formattedDay, {
+      allDay: [],
+      times: {},
+    });
+  }
+
+  if (calendarItem.allDay) {
+    let updatedAllDay = user.calendar.dates.get(formattedDay).allDay;
+    updatedAllDay.push(eventID);
+
+    user.calendar.dates.set(formattedDay, {
+      allDay: updatedAllDay,
+      times: user.calendar.dates.get(formattedDay).times,
+    });
+  } else {
+    if (!user.calendar.dates.get(formattedDay).times[time]) {
+      user.calendar.dates.get(formattedDay).times[time] = [];
+    }
+
+    let updatedTimes = user.calendar.dates.get(formattedDay).times[time];
+    updatedTimes.push(eventID);
+
+    user.calendar.dates.set(formattedDay, {
+      allDay: user.calendar.dates.get(formattedDay).allDay,
+      times: updatedTimes,
+    });
+  }
+
+  return user;
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.status(405).json("ERROR: Only POST requests are allowed.");
@@ -60,8 +95,6 @@ export default async function handler(req, res) {
       ) + 1; // +1 to include both endpoint days -- used for iteration later
   }
 
-  console.log(daySpan);
-
   const event = {
     title: calendarItem.name,
   };
@@ -78,22 +111,8 @@ export default async function handler(req, res) {
         // Place event ID on each date in the time period
         for (let i = 0; i < daySpan; i++) {
           const formattedDay = date.format("YYYY-MM-DD");
-          if (!user.calendar.dates[formattedDay]) {
-            user.calendar.dates[formattedDay] = {
-              allDay: [],
-              times: {},
-            };
-          }
 
-          if (calendarItem.allDay) {
-            user.calendar.dates[formattedDay].allDay.push(eventID);
-          } else {
-            if (!user.calendar.dates[formattedDay].times[time]) {
-              user.calendar.dates[formattedDay].times[time] = [];
-            }
-
-            user.calendar.dates[formattedDay].times[time].push(eventID);
-          }
+          user = addCalendarItem(user, calendarItem, eventID, formattedDay);
           date = date.add(1, "day");
         }
         break;
@@ -109,22 +128,7 @@ export default async function handler(req, res) {
           }
 
           const formattedDay = date.format("YYYY-MM-DD");
-          if (!user.calendar.dates[formattedDay]) {
-            user.calendar.dates[formattedDay] = {
-              allDay: [],
-              times: {},
-            };
-          }
-
-          if (calendarItem.allDay) {
-            user.calendar.dates[formattedDay].allDay.push(eventID);
-          } else {
-            if (!user.calendar.dates[formattedDay].times[time]) {
-              user.calendar.dates[formattedDay].times[time] = [];
-            }
-
-            user.calendar.dates[formattedDay].times[time].push(eventID);
-          }
+          user = addCalendarItem(user, calendarItem, eventID, formattedDay);
           date = date.add(1, "day");
         }
         break;
@@ -158,22 +162,7 @@ export default async function handler(req, res) {
           }
 
           const formattedDay = date.format("YYYY-MM-DD");
-          if (!user.calendar.dates[formattedDay]) {
-            user.calendar.dates[formattedDay] = {
-              allDay: [],
-              times: {},
-            };
-          }
-
-          if (calendarItem.allDay) {
-            user.calendar.dates[formattedDay].allDay.push(eventID);
-          } else {
-            if (!user.calendar.dates[formattedDay].times[time]) {
-              user.calendar.dates[formattedDay].times[time] = [];
-            }
-
-            user.calendar.dates[formattedDay].times[time].push(eventID);
-          }
+          user = addCalendarItem(user, calendarItem, eventID, formattedDay);
           date = date.add(1, "day");
         }
         break;
@@ -189,22 +178,7 @@ export default async function handler(req, res) {
           }
 
           const formattedDay = date.format("YYYY-MM-DD");
-          if (!user.calendar.dates[formattedDay]) {
-            user.calendar.dates[formattedDay] = {
-              allDay: [],
-              times: {},
-            };
-          }
-
-          if (calendarItem.allDay) {
-            user.calendar.dates[formattedDay].allDay.push(eventID);
-          } else {
-            if (!user.calendar.dates[formattedDay].times[time]) {
-              user.calendar.dates[formattedDay].times[time] = [];
-            }
-
-            user.calendar.dates[formattedDay].times[time].push(eventID);
-          }
+          user = addCalendarItem(user, calendarItem, eventID, formattedDay);
           date = date.add(1, "day");
         }
         break;
@@ -212,9 +186,7 @@ export default async function handler(req, res) {
   }
 
   const test = await user.save();
-  console.log(test);
-
-  // Store new events in calendar
+  console.log(test.calendar);
 
   res.status(200).json({ userID: userID });
 }
