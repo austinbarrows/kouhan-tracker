@@ -23,20 +23,8 @@ import {
   Month,
   DateRangePicker,
 } from "@mantine/dates";
-import { useAuthUser, withAuthUser } from "next-firebase-auth";
 import { getAuth } from "firebase/auth";
-import create from "zustand";
-import dayjs from "dayjs";
 import { useEffect } from "react";
-
-const useErrorStore = create((set) => ({
-  error: false,
-  setError: (updatedError) => {
-    set((state) => ({
-      error: updatedError,
-    }));
-  },
-}));
 
 async function submitForm(values) {
   const body = { itemData: values };
@@ -64,9 +52,6 @@ function validateWeekdays(weekdays) {
 }
 
 export function AddCalendarItemCard() {
-  // State
-  const errorState = useErrorStore((state) => state.error);
-  const setError = useErrorStore((state) => state.setError);
   // For sycnhronization purposes, this is computed once up here
   const currentDate = new Date();
 
