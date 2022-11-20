@@ -38,30 +38,6 @@ const useErrorStore = create((set) => ({
   },
 }));
 
-// Helper function to invert a given weekday's value
-function weekdayTransform(weekdays, index) {
-  weekdays[index].selected = !weekdays[index].selected;
-  // Must clone like this or the state doesn't update and buttons do not change
-  const newWeekdays = [...weekdays];
-  console.log(newWeekdays);
-  return newWeekdays;
-}
-
-const useSelectedWeekdaysStore = create((set) => ({
-  weekdays: [
-    { weekday: "M", selected: false },
-    { weekday: "T", selected: false },
-    { weekday: "W", selected: false },
-    { weekday: "Th", selected: false },
-    { weekday: "F", selected: false },
-    { weekday: "S", selected: false },
-    { weekday: "Su", selected: false },
-  ],
-  setWeekday: (dayIndex) => {
-    set((state) => ({ weekdays: weekdayTransform(state.weekdays, dayIndex) }));
-  },
-}));
-
 async function submitForm(values) {
   const body = { itemData: values };
   let token = getAuth().currentUser.accessToken;
@@ -91,9 +67,6 @@ export function AddCalendarItemCard() {
   // State
   const errorState = useErrorStore((state) => state.error);
   const setError = useErrorStore((state) => state.setError);
-  const weekdays = useSelectedWeekdaysStore((state) => state.weekdays);
-  const setWeekday = useSelectedWeekdaysStore((state) => state.setWeekday);
-
   // For sycnhronization purposes, this is computed once up here
   const currentDate = new Date();
 
@@ -105,7 +78,15 @@ export function AddCalendarItemCard() {
       recurring: false,
       recurringScale: "daily",
       allDay: false,
-      weekdays: weekdays,
+      weekdays: [
+        { weekday: "M", selected: false },
+        { weekday: "T", selected: false },
+        { weekday: "W", selected: false },
+        { weekday: "Th", selected: false },
+        { weekday: "F", selected: false },
+        { weekday: "S", selected: false },
+        { weekday: "Su", selected: false },
+      ],
       monthlyDay: new Date(2018, 0, 1),
       yearlyDay: new Date(2018, 0, 1),
       spanningPeriod: [null, null],
@@ -189,13 +170,15 @@ export function AddCalendarItemCard() {
             {form.values.recurring && form.values.recurringScale === "weekly" && (
               <Box>
                 <Button.Group>
-                  {weekdays.map((day, index) => {
+                  {form.values.weekdays.map((day, index) => {
                     return (
                       <Button
                         key={day.weekday}
                         variant={day.selected ? "filled" : "outline"}
                         onClick={(event) => {
-                          setWeekday(index);
+                          const weekdays = form.values.weekdays;
+                          weekdays[index].selected =
+                            !form.values.weekdays[index].selected;
                           form.setFieldValue("weekdays", weekdays);
                         }}
                         sx={
