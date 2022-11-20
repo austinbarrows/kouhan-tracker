@@ -1,4 +1,4 @@
-import CoreLayout from "components/corelayout";
+import CoreLayout from "components/coreLayout";
 import { Button, Box } from "@mantine/core";
 const { Client } = require("react-hydration-provider"); // Has to be a `const -- require` import or it fails to import and throws an error
 import { auth } from "firebaseConfig";

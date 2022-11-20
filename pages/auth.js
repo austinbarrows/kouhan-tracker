@@ -1,5 +1,5 @@
 import { withAuthUser, AuthAction } from "next-firebase-auth";
-import LandingLayout from "components/landinglayout";
+import LandingLayout from "components/landingLayout";
 import { useToggle, upperFirst } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import {

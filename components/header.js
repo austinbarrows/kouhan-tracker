@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Header, Group, Container, Box, Button } from "@mantine/core";
-import { DarkModeToggle } from "./darkmodetoggle";
+import { DarkModeToggle } from "./darkmodeToggle";
 import {
   useAuthUser,
   withAuthUser,

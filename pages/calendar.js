@@ -1,6 +1,6 @@
 import { Box, Container, Grid, Skeleton } from "@mantine/core";
-import CoreLayout from "components/corelayout";
-import { AddCalendarItemCard } from "components/addcalendaritemcard";
+import CoreLayout from "components/coreLayout";
+import { AddCalendarItemCard } from "components/addCalendarItemCard";
 import dayjs from "dayjs";
 import create from "zustand";
 import { IconChevronLeft, IconChevronRight, IconRefresh } from "@tabler/icons";

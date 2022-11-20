@@ -1,4 +1,4 @@
-import CoreLayout from "components/corelayout";
+import CoreLayout from "components/coreLayout";
 import {
   useAuthUser,
   withAuthUser,
