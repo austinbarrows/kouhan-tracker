@@ -103,9 +103,10 @@ export default async function handler(req, res) {
   user.calendar.events.set(eventID, event);
 
   const time = dayjs(calendarItem.time).format("HH:mm:ss");
-  let date = dayjs(calendarItem.spanningPeriod[0]);
+
   // Determine how to schedule the event based on provided form parameters
   if (calendarItem.recurring) {
+    let date = dayjs(calendarItem.spanningPeriod[0]);
     switch (calendarItem.recurringScale) {
       case "daily":
         // Place event ID on each date in the time period
@@ -207,6 +208,10 @@ export default async function handler(req, res) {
         }
         break;
     }
+  } else {
+    const date = dayjs(calendarItem.date);
+    const formattedDay = date.format("YYYY-MM-DD");
+    user = addCalendarItem(user, calendarItem, eventID, formattedDay, time);
   }
 
   const test = await user.save();
