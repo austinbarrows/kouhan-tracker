@@ -73,7 +73,7 @@ export function AddCalendarItemCard() {
         { weekday: "Su", selected: false },
       ],
       monthlyDay: new Date(2018, 0, 1),
-      yearlyDay: new Date(2018, 0, 1),
+      yearlyDay: currentDate,
       spanningPeriod: [null, null],
       monthlyStrict: false,
     },
@@ -91,11 +91,6 @@ export function AddCalendarItemCard() {
           : "Please select at least one weekday",
     },
   });
-
-  // Set yearlyDay to the current date only once on component load
-  useEffect(() => {
-    form.setFieldValue("yearlyDay", currentDate);
-  }, []);
 
   return (
     <Paper radius="md" p="xl" withBorder className="p-2 pt-3 pl-4">
