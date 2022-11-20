@@ -269,13 +269,22 @@ export function AddCalendarItemCard() {
               />
             )}
           </Stack>
-          <Group position="apart" mt="xl">
+          <Group mt="md">
             <Button
               type="submit"
               variant="gradient"
               gradient={{ from: "#ed6ea0", to: "#ec8c69", deg: 35 }}
             >
               Add
+            </Button>
+            <Button
+              variant="gradient"
+              gradient={{ from: "#02aab0", to: "#00cdac", deg: 35 }}
+              onClick={() => {
+                form.reset();
+              }}
+            >
+              Clear
             </Button>
           </Group>
         </form>
