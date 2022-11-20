@@ -8,6 +8,7 @@ import {
   withAuthUserTokenSSR,
   AuthAction,
 } from "next-firebase-auth";
+import dayjs from "dayjs";
 
 const Dashboard = (props) => {
   const AuthUser = useAuthUser();
@@ -31,7 +32,7 @@ export const getServerSideProps = withAuthUserTokenSSR({
   whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
 })(async ({ AuthUser }) => {
   // Optionally, get other props.
-  const startDate = "2022-08-20";
+  const startDate = dayjs().format();
   // User ID token uniquely identifies a user with their firebase uid and verifies they are legitimately logged in (or their login info has been stolen lol)
   const token = await AuthUser.getIdToken();
   console.log("before response");
