@@ -274,7 +274,7 @@ export function AddCalendarItemCard() {
             </Button>
             <Button
               variant="gradient"
-              gradient={{ from: "#02aab0", to: "#00cdac", deg: 35 }}
+              gradient={{ from: "#185a9d", to: "#43cea2", deg: 35 }}
               onClick={() => {
                 form.reset();
               }}
