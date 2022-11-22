@@ -82,6 +82,7 @@ const Calendar = (props) => {
   useEffect(() => {
     setWeek(startDay, "current");
 
+    // Gather initial calendar data on component load
     const updateCalendar = async () => {
       const auth = getAuth();
       onAuthStateChanged(auth, async (user) => {
@@ -165,16 +166,20 @@ const Calendar = (props) => {
                   />
                 </Box>
               </Grid.Col>
-              {weekdays.map((day, index) => {
-                return (
-                  <Grid.Col span={1} key={index}>
-                    <Box className="bg-amber-300 h-104 border">
-                      <Text>{day.format("YYYY-MM-DD")}</Text>
-                      <Text>{JSON.stringify(calendar[index])}</Text>
-                    </Box>
-                  </Grid.Col>
-                );
-              })}
+              <Grid.Col span={7}>
+                <Grid columns={7} gutter={0} className="divide-x border">
+                  {weekdays.map((day, index) => {
+                    return (
+                      <Grid.Col span={1} key={index}>
+                        <Box className="h-104">
+                          <Text>{day.format("YYYY-MM-DD")}</Text>
+                          <Text>{JSON.stringify(calendar[index])}</Text>
+                        </Box>
+                      </Grid.Col>
+                    );
+                  })}
+                </Grid>
+              </Grid.Col>
             </Grid>
           </Box>
         </Grid.Col>
