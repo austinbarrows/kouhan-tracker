@@ -167,10 +167,29 @@ const Calendar = (props) => {
                 </Box>
               </Grid.Col>
               <Grid.Col span={7}>
-                <Grid columns={7} gutter={0} className="divide-x border">
+                <Grid
+                  columns={7}
+                  gutter={0}
+                  className="divide-x border"
+                  sx={(theme) => ({
+                    borderColor:
+                      theme.colorScheme === "dark"
+                        ? theme.colors.dark[0]
+                        : theme.colors.dark[9],
+                  })}
+                >
                   {weekdays.map((day, index) => {
                     return (
-                      <Grid.Col span={1} key={index}>
+                      <Grid.Col
+                        span={1}
+                        key={index}
+                        sx={(theme) => ({
+                          borderColor:
+                            theme.colorScheme === "dark"
+                              ? theme.colors.dark[0]
+                              : theme.colors.dark[9],
+                        })}
+                      >
                         <Box className="h-104">
                           <Text>{day.format("YYYY-MM-DD")}</Text>
                           <Text>{JSON.stringify(calendar[index])}</Text>
