@@ -103,7 +103,6 @@ const Calendar = (props) => {
         console.log(newCalendar);
         setCalendar(newCalendar);
       });
-      
     };
 
     updateCalendar();
