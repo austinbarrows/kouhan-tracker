@@ -11,7 +11,7 @@ import {
   withAuthUserTokenSSR,
   AuthAction,
 } from "next-firebase-auth";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useEffect } from "react";
 
 const localizedFormat = require("dayjs/plugin/localizedFormat");
@@ -81,26 +81,28 @@ const Calendar = (props) => {
   console.log("testABC");
   useEffect(() => {
     setWeek(startDay, "current");
-    console.log("test");
 
     const updateCalendar = async () => {
-      console.log("test");
-      const startDate = dayjs().format();
-      const token = getAuth().currentUser.accessToken;
-      const response = await fetch("/api/getCalendarData", {
-        method: "POST",
-        headers: {
-          authorization: token,
-        },
-        body: JSON.stringify({
-          startDate: startDate,
-          numberOfDays: 7,
-        }),
+      const auth = getAuth();
+      onAuthStateChanged(auth, async (user) => {
+        const startDate = dayjs().format();
+        const token = getAuth().currentUser.accessToken;
+        console.log(token);
+        const response = await fetch("/api/getCalendarData", {
+          method: "POST",
+          headers: {
+            authorization: token,
+          },
+          body: JSON.stringify({
+            startDate: startDate,
+            numberOfDays: 7,
+          }),
+        });
+        const data = await response.json();
+        const newCalendar = data.calendar;
+        console.log(newCalendar);
+        setCalendar(newCalendar);
       });
-      const data = await response.json();
-      const newCalendar = data.calendar;
-      console.log(newCalendar);
-      setCalendar(newCalendar);
     };
 
     updateCalendar();
