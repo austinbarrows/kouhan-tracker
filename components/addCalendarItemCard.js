@@ -58,7 +58,7 @@ export function AddCalendarItemCard() {
   const form = useForm({
     initialValues: {
       name: "",
-      date: "",
+      date: currentDate,
       time: new Date(),
       recurring: false,
       recurringScale: "daily",
