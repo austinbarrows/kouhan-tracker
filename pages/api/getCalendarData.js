@@ -5,6 +5,29 @@ import { init } from "next-firebase-auth";
 import dayjs from "dayjs";
 import User from "../../db/models/userModel";
 
+function eventsOnDate(formattedDate, calendar) {
+  if (!calendar.dates[formattedDate]) {
+    return null;
+  }
+
+  const allDay = calendar.dates[formattedDate].allDay;
+  const times = calendar.dates[formattedDate].times;
+  let events = {};
+
+  for (let i = 0; i < allDay.length; i++) {
+    let eventUUID = allDay[i];
+    events[eventUUID] = calendar.events[eventUUID];
+  }
+
+  for (const [time, eventUUIDArray] of Object.entries(times)) {
+    for (let i = 0; i < eventUUIDArray.length; i++) {
+      events[eventUUID] = calendar.events[eventUUID];
+    }
+  }
+
+  return events;
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.status(405).json("ERROR: Only POST requests are allowed.");
@@ -56,8 +79,12 @@ export default async function handler(req, res) {
 
     let calendarData = [];
     for (let i = 0; i < body.numberOfDays; i++) {
+      let formattedDate = date.format("YYYY-MM-DD");
       // calendarData will have 'undefined' for any days in the user's calendar that have no scheduled events
-      calendarData[i] = calendar.dates[date.format("YYYY-MM-DD")];
+      calendarData[i] = {
+        dates: calendar.dates[formattedDate] || null,
+        events: eventsOnDate(formattedDate, calendar),
+      };
       date = date.add(1, "day");
     }
     console.log("Calendar data: ", calendarData);
