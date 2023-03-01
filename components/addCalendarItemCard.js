@@ -25,6 +25,7 @@ import {
 } from "@mantine/dates";
 import { getAuth } from "firebase/auth";
 import { useEffect } from "react";
+import useWeekStore from "lib/state";
 
 async function submitForm(values) {
   const body = { itemData: values };
@@ -52,6 +53,7 @@ function validateWeekdays(weekdays) {
 }
 
 export function AddCalendarItemCard() {
+  const updateCalendar = useWeekStore((state) => state.updateCalendar);
   // For sycnhronization purposes, this is computed once up here
   const currentDate = new Date();
 
@@ -101,6 +103,7 @@ export function AddCalendarItemCard() {
         <form
           onSubmit={form.onSubmit(async (values) => {
             await submitForm(values);
+            await updateCalendar();
           })}
           className="w-full"
         >
