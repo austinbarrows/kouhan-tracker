@@ -2,22 +2,17 @@ import mongoose from "mongoose";
 
 const { Schema, model } = mongoose;
 
-const userSchema = new Schema({
-  userID: String, // String is shorthand for {type: String}
-  displayName: String,
-  calendar: {
-    events: {
-      type: Map,
-      of: { type: Object },
-      default: new Map(),
-    },
-    dates: {
-      type: Map,
-      of: { type: Object },
-      default: new Map(),
+const userSchema = new Schema(
+  {
+    userID: String, // String is shorthand for {type: String}
+    displayName: String,
+    calendar: {
+      events: {},
+      dates: {},
     },
   },
-});
+  { minimize: false }
+);
 
 module.exports = mongoose.models.User || mongoose.model("User", userSchema);
 

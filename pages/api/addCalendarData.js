@@ -12,33 +12,21 @@ const { Schema, model } = mongoose;
 /* Modifies user object to add an item to 
    their calendar and then returns that modified user object */
 function addCalendarItem(user, calendarItem, eventID, formattedDay, time) {
-  if (!user.calendar.dates.get(formattedDay)) {
-    user.calendar.dates.set(formattedDay, {
+  if (!user.calendar.dates[formattedDay]) {
+    user.calendar.dates[formattedDay] = {
       allDay: [],
       times: {},
-    });
+    };
   }
 
   if (calendarItem.allDay) {
-    let updatedAllDay = user.calendar.dates.get(formattedDay).allDay;
-    updatedAllDay.push(eventID);
-
-    user.calendar.dates.set(formattedDay, {
-      allDay: updatedAllDay,
-      times: user.calendar.dates.get(formattedDay).times,
-    });
+    user.calendar.dates[formattedDay].allDay.push(eventID);
   } else {
-    if (!user.calendar.dates.get(formattedDay).times[time]) {
-      user.calendar.dates.get(formattedDay).times[time] = [];
+    if (!user.calendar.dates[formattedDay].times[time]) {
+      user.calendar.dates[formattedDay].times[time] = [];
     }
 
-    let updatedTimes = user.calendar.dates.get(formattedDay).times;
-    updatedTimes[time].push(eventID);
-
-    user.calendar.dates.set(formattedDay, {
-      allDay: user.calendar.dates.get(formattedDay).allDay,
-      times: updatedTimes,
-    });
+    user.calendar.dates[formattedDay].times[time].push(eventID);
   }
 
   return user;
@@ -100,7 +88,7 @@ export default async function handler(req, res) {
   };
 
   const eventID = randomUUID();
-  user.calendar.events.set(eventID, event);
+  user.calendar.events[eventID] = event;
 
   const time = dayjs(calendarItem.time).format("HH:mm:ss");
 
@@ -214,8 +202,9 @@ export default async function handler(req, res) {
     user = addCalendarItem(user, calendarItem, eventID, formattedDay, time);
   }
 
-  const test = await user.save();
-  console.log(test.calendar);
+  user.markModified("calendar.events");
+  user.markModified("calendar.dates");
+  await user.save();
 
   res.status(200).json({ userID: userID });
 }
