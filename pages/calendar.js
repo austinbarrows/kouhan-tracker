@@ -19,6 +19,8 @@ import useWeekStore from "lib/state";
 const localizedFormat = require("dayjs/plugin/localizedFormat");
 dayjs.extend(localizedFormat);
 
+function generateEventList(calendar, day) {}
+
 const Calendar = (props) => {
   const weekdays = useWeekStore((state) => state.weekdays);
   const calendar = useWeekStore((state) => state.calendar);
@@ -98,6 +100,7 @@ const Calendar = (props) => {
                   })}
                 >
                   {weekdays.map((day, index) => {
+                    const eventList = generateEventList(calendar, day);
                     return (
                       <Grid.Col
                         span={1}
