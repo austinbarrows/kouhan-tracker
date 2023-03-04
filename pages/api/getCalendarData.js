@@ -21,6 +21,7 @@ function eventsOnDate(formattedDate, calendar) {
 
   for (const [time, eventUUIDArray] of Object.entries(times)) {
     for (let i = 0; i < eventUUIDArray.length; i++) {
+      const eventUUID = eventUUIDArray[i];
       events[eventUUID] = calendar.events[eventUUID];
     }
   }
