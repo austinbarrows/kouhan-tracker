@@ -11,99 +11,63 @@ import {
   withAuthUserTokenSSR,
   AuthAction,
 } from "next-firebase-auth";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useEffect } from "react";
+
+import useWeekStore from "lib/state";
 
 const localizedFormat = require("dayjs/plugin/localizedFormat");
 dayjs.extend(localizedFormat);
 
-// Day is a dayjs() date object, direction is either "next" or "previous"
-function generateWeek(day, direction = "") {
-  // Find nearest monday and start week array with that monday
-  let j = day;
-  // Max number of days from Monday is 6 (Sunday)
-  for (let i = 0; i < 6; i++) {
-    if (j.format("dddd") === "Monday") {
-      break;
-    }
-    j = j.subtract(1, "day");
+function generateEventElements(weekdayData, type) {
+  if (weekdayData === undefined || weekdayData === null) {
+    return null;
   }
 
-  // Adjust week offset if necessary
-  if (direction === "next") {
-    j = j.add(7, "day");
-  } else if (direction === "previous") {
-    j = j.subtract(7, "day");
+  let eventElements;
+  if (type === "allDay") {
+    eventElements = weekdayData.allDay.map((event, index) => {
+      return <Text>{event.title}</Text>;
+    });
   }
 
-  // Generate week array with all 7 days starting on a given day
-  let week = [];
-  for (let i = 0; i < 7; i++) {
-    week[i] = j;
-    j = j.add(1, "day");
+  if (type === "times") {
+    eventElements = [];
+    Object.keys(weekdayData.times).forEach((time, index) => {
+      console.log(weekdayData.times);
+      const eventsAtTime = weekdayData.times[time].map((event, index) => {
+        return <Text>{event.title}</Text>;
+      });
+      eventElements[index] = (
+        <Text>
+          {time}
+          {eventsAtTime}
+        </Text>
+      );
+    });
   }
-
-  return week;
+  console.log("Event elements generated: ");
+  console.log(eventElements);
+  return eventElements;
 }
 
-// This feels hacky but for some reason there's no way to set a default value for weekdays based on startDay since startDay doesn't exist when I'm trying to use it
-const startDayInitial = dayjs();
-const weekdaysInitial = generateWeek(startDayInitial, "current");
-const useWeekStore = create((set) => ({
-  weekdays: weekdaysInitial,
-  startDay: startDayInitial,
-  calendar: [],
-  setWeek: (day, direction) => {
-    set((state) => ({
-      weekdays: generateWeek(day, direction),
-    }));
-  },
-  setStart: (day) => {
-    set((state) => ({
-      startDay: day,
-    }));
-  },
-  setCalendar: (calendar) => {
-    set((state) => ({
-      calendar: calendar,
-    }));
-  },
-}));
-
 const Calendar = (props) => {
-  const startDay = useWeekStore((state) => state.startDay);
   const weekdays = useWeekStore((state) => state.weekdays);
   const calendar = useWeekStore((state) => state.calendar);
+  const formattedCalendar = useWeekStore((state) => state.formattedCalendar);
   const setWeek = useWeekStore((state) => state.setWeek);
-  const setStart = useWeekStore((state) => state.setStart);
-  const setCalendar = useWeekStore((state) => state.setCalendar);
+  const updateCalendar = useWeekStore((state) => state.updateCalendar);
 
-  console.log("testABC");
+  const authUser = useAuthUser();
   useEffect(() => {
-    setWeek(startDay, "current");
-    console.log("test");
-
-    const updateCalendar = async () => {
-      console.log("test");
-      const startDate = dayjs().format();
-      const token = getAuth().currentUser.accessToken;
-      const response = await fetch("/api/getCalendarData", {
-        method: "POST",
-        headers: {
-          authorization: token,
-        },
-        body: JSON.stringify({
-          startDate: startDate,
-          numberOfDays: 7,
-        }),
-      });
-      const data = await response.json();
-      const newCalendar = data.calendar;
-      console.log(newCalendar);
-      setCalendar(newCalendar);
+    const updateCalendarWrapper = async (authUser) => {
+      const token = await authUser.getIdToken();
+      updateCalendar(token);
+      // Gather initial calendar data on component load
+      console.log("calendar should be updated");
     };
 
-    updateCalendar();
+    updateCalendarWrapper(authUser);
   }, []);
 
   return (
@@ -136,18 +100,18 @@ const Calendar = (props) => {
                       stroke={1.5}
                       size={48}
                       className="border rounded-lg cursor-pointer mr-1"
-                      onClick={() => {
-                        setWeek(startDay, "previous");
-                        setStart(startDay.subtract(7, "day"));
+                      onClick={async () => {
+                        setWeek(weekdays[0], "previous");
+                        updateCalendar(await authUser.getIdToken());
                       }}
                     />
                     <IconChevronRight
                       stroke={1.5}
                       size={48}
                       className="border rounded-lg cursor-pointer mr-2"
-                      onClick={() => {
-                        setWeek(startDay, "next");
-                        setStart(startDay.add(7, "day"));
+                      onClick={async () => {
+                        setWeek(weekdays[0], "next");
+                        updateCalendar(await authUser.getIdToken());
                       }}
                     />
                   </Box>
@@ -155,24 +119,58 @@ const Calendar = (props) => {
                     stroke={1.5}
                     size={48}
                     className="border rounded-lg cursor-pointer mr-2"
-                    onClick={() => {
-                      const updated = dayjs();
-                      setStart(updated);
-                      setWeek(updated);
+                    onClick={async () => {
+                      updateCalendar(await authUser.getIdToken());
                     }}
                   />
                 </Box>
               </Grid.Col>
-              {weekdays.map((day, index) => {
-                return (
-                  <Grid.Col span={1} key={index}>
-                    <Box className="bg-amber-300 h-104 border">
-                      <Text>{day.format("YYYY-MM-DD")}</Text>
-                      <Text>{JSON.stringify(calendar[index])}</Text>
-                    </Box>
-                  </Grid.Col>
-                );
-              })}
+              <Grid.Col span={7}>
+                <Grid
+                  columns={7}
+                  gutter={0}
+                  className="divide-x border"
+                  sx={(theme) => ({
+                    borderColor:
+                      theme.colorScheme === "dark"
+                        ? theme.colors.dark[0]
+                        : theme.colors.dark[9],
+                  })}
+                >
+                  {weekdays.map((day, index) => {
+                    return (
+                      <Grid.Col
+                        span={1}
+                        key={index}
+                        sx={(theme) => ({
+                          borderColor:
+                            theme.colorScheme === "dark"
+                              ? theme.colors.dark[0]
+                              : theme.colors.dark[9],
+                        })}
+                      >
+                        <Box className="h-104">
+                          <Text>{day.format("YYYY-MM-DD")}</Text>
+                          <Text>
+                            <b>All-day events:</b>
+                            {generateEventElements(
+                              formattedCalendar[index],
+                              "allDay"
+                            )}
+                          </Text>
+                          <Text>
+                            <b>Timed events:</b>
+                            {generateEventElements(
+                              formattedCalendar[index],
+                              "times"
+                            )}
+                          </Text>
+                        </Box>
+                      </Grid.Col>
+                    );
+                  })}
+                </Grid>
+              </Grid.Col>
             </Grid>
           </Box>
         </Grid.Col>

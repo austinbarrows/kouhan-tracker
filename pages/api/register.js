@@ -41,6 +41,10 @@ const handler = async (req, res) => {
   const newUserDoc = new User({
     userID: newUserUID,
     displayName: displayName,
+    calendar: {
+      events: {},
+      dates: {},
+    },
   });
   const addResult = await newUserDoc.save();
   console.log(addResult);
