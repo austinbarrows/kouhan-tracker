@@ -103,7 +103,9 @@ export function AddCalendarItemCard() {
         <form
           onSubmit={form.onSubmit(async (values) => {
             await submitForm(values);
-            await updateCalendar();
+            const auth = getAuth();
+            const token = await auth.currentUser.getIdToken();
+            await updateCalendar(token);
           })}
           className="w-full"
         >
