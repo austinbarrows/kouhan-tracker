@@ -15,7 +15,7 @@ function eventsOnDate(formattedDate, calendar) {
   let events = {};
 
   for (let i = 0; i < allDay.length; i++) {
-    let eventUUID = allDay[i];
+    const eventUUID = allDay[i];
     events[eventUUID] = calendar.events[eventUUID];
   }
 
