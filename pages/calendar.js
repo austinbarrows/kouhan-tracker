@@ -19,7 +19,37 @@ import useWeekStore from "lib/state";
 const localizedFormat = require("dayjs/plugin/localizedFormat");
 dayjs.extend(localizedFormat);
 
-function generateEventList(calendar, day) {}
+function generateEventElements(weekdayData, type) {
+  if (weekdayData === undefined || weekdayData === null) {
+    return null;
+  }
+
+  let eventElements;
+  if (type === "allDay") {
+    eventElements = weekdayData.allDay.map((event, index) => {
+      return <Text>{event.title}</Text>;
+    });
+  }
+
+  if (type === "times") {
+    eventElements = [];
+    Object.keys(weekdayData.times).forEach((time, index) => {
+      console.log(weekdayData.times);
+      const eventsAtTime = weekdayData.times[time].map((event, index) => {
+        return <Text>{event.title}</Text>;
+      });
+      eventElements[index] = (
+        <Text>
+          {time}
+          {eventsAtTime}
+        </Text>
+      );
+    });
+  }
+  console.log("Event elements generated: ");
+  console.log(eventElements);
+  return eventElements;
+}
 
 const Calendar = (props) => {
   const weekdays = useWeekStore((state) => state.weekdays);
@@ -33,7 +63,7 @@ const Calendar = (props) => {
     const updateCalendarWrapper = async (authUser) => {
       const token = await authUser.getIdToken();
       updateCalendar(token);
-    // Gather initial calendar data on component load
+      // Gather initial calendar data on component load
       console.log("calendar should be updated");
     };
 
@@ -108,7 +138,6 @@ const Calendar = (props) => {
                   })}
                 >
                   {weekdays.map((day, index) => {
-                    const eventList = generateEventList(calendar, day);
                     return (
                       <Grid.Col
                         span={1}
@@ -122,7 +151,20 @@ const Calendar = (props) => {
                       >
                         <Box className="h-104">
                           <Text>{day.format("YYYY-MM-DD")}</Text>
-                          <Text>{JSON.stringify(calendar[index])}</Text>
+                          <Text>
+                            <b>All-day events:</b>
+                            {generateEventElements(
+                              formattedCalendar[index],
+                              "allDay"
+                            )}
+                          </Text>
+                          <Text>
+                            <b>Timed events:</b>
+                            {generateEventElements(
+                              formattedCalendar[index],
+                              "times"
+                            )}
+                          </Text>
                         </Box>
                       </Grid.Col>
                     );
