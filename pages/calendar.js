@@ -24,6 +24,7 @@ function generateEventList(calendar, day) {}
 const Calendar = (props) => {
   const weekdays = useWeekStore((state) => state.weekdays);
   const calendar = useWeekStore((state) => state.calendar);
+  const formattedCalendar = useWeekStore((state) => state.formattedCalendar);
   const setWeek = useWeekStore((state) => state.setWeek);
   const updateCalendar = useWeekStore((state) => state.updateCalendar);
 
