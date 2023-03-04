@@ -28,9 +28,16 @@ const Calendar = (props) => {
   const setWeek = useWeekStore((state) => state.setWeek);
   const updateCalendar = useWeekStore((state) => state.updateCalendar);
 
+  const authUser = useAuthUser();
   useEffect(() => {
+    const updateCalendarWrapper = async (authUser) => {
+      const token = await authUser.getIdToken();
+      updateCalendar(token);
     // Gather initial calendar data on component load
-    updateCalendar();
+      console.log("calendar should be updated");
+    };
+
+    updateCalendarWrapper(authUser);
   }, []);
 
   return (
@@ -63,18 +70,18 @@ const Calendar = (props) => {
                       stroke={1.5}
                       size={48}
                       className="border rounded-lg cursor-pointer mr-1"
-                      onClick={() => {
+                      onClick={async () => {
                         setWeek(weekdays[0], "previous");
-                        updateCalendar();
+                        updateCalendar(await authUser.getIdToken());
                       }}
                     />
                     <IconChevronRight
                       stroke={1.5}
                       size={48}
                       className="border rounded-lg cursor-pointer mr-2"
-                      onClick={() => {
+                      onClick={async () => {
                         setWeek(weekdays[0], "next");
-                        updateCalendar();
+                        updateCalendar(await authUser.getIdToken());
                       }}
                     />
                   </Box>
@@ -82,8 +89,8 @@ const Calendar = (props) => {
                     stroke={1.5}
                     size={48}
                     className="border rounded-lg cursor-pointer mr-2"
-                    onClick={() => {
-                      updateCalendar();
+                    onClick={async () => {
+                      updateCalendar(await authUser.getIdToken());
                     }}
                   />
                 </Box>
