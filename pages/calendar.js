@@ -23,7 +23,7 @@ dayjs.extend(localizedFormat);
 
 function generateEventElements(weekdayData, type) {
   if (weekdayData === undefined || weekdayData === null) {
-    return null;
+    return <Text>None</Text>;
   }
 
   let eventElements;
@@ -50,6 +50,9 @@ function generateEventElements(weekdayData, type) {
   }
   console.log("Event elements generated: ");
   console.log(eventElements);
+  if (eventElements.length === 0) {
+    return <Text>None</Text>;
+  }
   return eventElements;
 }
 
