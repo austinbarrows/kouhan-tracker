@@ -16,6 +16,8 @@ import { useEffect } from "react";
 
 import useWeekStore from "lib/state";
 
+const customParseFormat = require("dayjs/plugin/customParseFormat");
+dayjs.extend(customParseFormat);
 const localizedFormat = require("dayjs/plugin/localizedFormat");
 dayjs.extend(localizedFormat);
 
@@ -40,7 +42,7 @@ function generateEventElements(weekdayData, type) {
       });
       eventElements[index] = (
         <Text>
-          {time}
+          {dayjs(time, "HH:mm:ss").format("LT")}
           {eventsAtTime}
         </Text>
       );
@@ -150,7 +152,9 @@ const Calendar = (props) => {
                         })}
                       >
                         <Box className="h-104">
-                          <Text>{day.format("YYYY-MM-DD")}</Text>
+                          <Text className="text-center">
+                            {day.format("LL")}
+                          </Text>
                           <Text>
                             <b>All-day events:</b>
                             {generateEventElements(
