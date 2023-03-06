@@ -78,7 +78,7 @@ const Calendar = (props) => {
   return (
     <Box>
       <Grid>
-        <Grid.Col span={8}>
+        <Grid.Col span={9}>
           <Box
             sx={(theme) => ({
               border: `1px solid ${
@@ -147,6 +147,7 @@ const Calendar = (props) => {
                       <Grid.Col
                         span={1}
                         key={index}
+                        className="pl-1 pr-1 pb-1"
                         sx={(theme) => ({
                           borderColor:
                             theme.colorScheme === "dark"
@@ -181,7 +182,7 @@ const Calendar = (props) => {
             </Grid>
           </Box>
         </Grid.Col>
-        <Grid.Col span={4}>
+        <Grid.Col span={3}>
           <AddCalendarItemCard></AddCalendarItemCard>
         </Grid.Col>
       </Grid>
