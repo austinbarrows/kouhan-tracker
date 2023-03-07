@@ -1,4 +1,4 @@
-import { Box, Container, Grid, Skeleton, Text } from "@mantine/core";
+import { Box, Container, Grid, List, Skeleton, Text } from "@mantine/core";
 import CoreLayout from "components/coreLayout";
 import { AddCalendarItemCard } from "components/addCalendarItemCard";
 import dayjs from "dayjs";
@@ -29,7 +29,14 @@ function generateEventElements(weekdayData, type) {
   let eventElements;
   if (type === "allDay") {
     eventElements = weekdayData.allDay.map((event, index) => {
-      return <Text>{event.title}</Text>;
+      {
+        /* BUG NOTE: These classes MUST contain "break-words table table-fixed w-full" to get text wrapping to work properly, due to the fact that overflow-wrap does not work when the width is not explictly defined*/
+      }
+      return (
+        <Text className="break-words table table-fixed w-full">
+          {event.title}
+        </Text>
+      );
     });
   }
 
@@ -38,13 +45,20 @@ function generateEventElements(weekdayData, type) {
     Object.keys(weekdayData.times).forEach((time, index) => {
       console.log(weekdayData.times);
       const eventsAtTime = weekdayData.times[time].map((event, index) => {
-        return <Text>{event.title}</Text>;
+        return (
+          <List.Item>
+            {/* BUG NOTE: These classes MUST contain "break-words table table-fixed w-full" to get text wrapping to work properly, due to the fact that overflow-wrap does not work when the width is not explictly defined*/}
+            <Text className="break-words table table-fixed w-full">
+              {event.title}
+            </Text>
+          </List.Item>
+        );
       });
       eventElements[index] = (
-        <Text>
+        <List icon="•">
           {dayjs(time, "HH:mm:ss").format("LT")}
           {eventsAtTime}
-        </Text>
+        </List>
       );
     });
   }
@@ -92,7 +106,7 @@ const Calendar = (props) => {
                   : theme.white,
               borderRadius: theme.radius.md,
             })}
-            className="p-2"
+            className="p-2 mb-2"
           >
             <Grid columns={7} gutter={0}>
               <Grid.Col span={7} className="text-3xl ml-2 mb-2 mt-1">
@@ -147,7 +161,7 @@ const Calendar = (props) => {
                       <Grid.Col
                         span={1}
                         key={index}
-                        className="pl-1 pr-1 pb-1"
+                        className="pb-1 pl-1 pr-1"
                         sx={(theme) => ({
                           borderColor:
                             theme.colorScheme === "dark"
@@ -155,7 +169,7 @@ const Calendar = (props) => {
                               : theme.colors.dark[9],
                         })}
                       >
-                        <Box className="h-104">
+                        <Box className="min-h-104">
                           <Text className="text-center">
                             {day.format("LL")}
                           </Text>
